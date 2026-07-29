@@ -1,41 +1,74 @@
 # smterm landing page
 
-Marketing site for [smterm](https://github.com/vcmf/smterm), built with Next.js (App Router).
+Marketing site for [smterm](https://github.com/vcmf/smterm), a minimal terminal for agentic
+coding. Built with Next.js (App Router) and exported as a static site.
 
 ## Develop
 
-```
+```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:3000
 ```
-
-Open http://localhost:3000.
 
 ## Build
 
+```bash
+npm run build      # static site written to out/
 ```
-npm run build
+
+`next.config.mjs` sets `output: "export"`, so the build is a fully static site in `out/` that
+you can host anywhere: GitHub Pages, Vercel, Netlify, Cloudflare Pages, S3, and so on.
+
+Other scripts: `npm run lint`, `npm run format` (Prettier), `npm run format:check`.
+
+## Structure
+
+```
+app/
+  layout.tsx        metadata (title, description, Open Graph) + globals import
+  page.tsx          composes the section components in order
+  globals.css       reset, design tokens (.dc-root), base styles
+  _fonts.css        bundled @font-face rules (generated; not hand-edited)
+components/
+  effects.tsx       client behaviour: canvas background, scroll reveal, hover
+  sections/         one component per page section
+    background-fx.tsx  animated phosphor cell-field + gradients
+    nav.tsx
+    hero.tsx
+    hero-screenshot.tsx
+    problem.tsx
+    features.tsx
+    agents-board.tsx
+    why.tsx
+    themes.tsx
+    install.tsx
+    faq.tsx
+    final-cta.tsx
+    footer.tsx
+public/
+  fonts/            Geist Mono, JetBrains Mono, Phosphor icons (woff2/woff/ttf)
+  media/            screenshots (from the app README), logo, icon
 ```
 
-`next.config.mjs` sets `output: "export"`, so `npm run build` writes a fully static site to
-`out/` that you can host anywhere (GitHub Pages, Vercel, Netlify, S3, ...).
+Each section is a plain component. Styling is inline (the design's original approach) and reads
+from CSS-variable tokens defined on `.dc-root` in `globals.css`, so re-theming happens in one
+place. Icons are the [Phosphor](https://phosphoricons.com) font (`<i class="ph ...">`).
 
-## How it is put together
+### Interactivity (`components/effects.tsx`)
 
-- `app/page.tsx` reads `app/content.html` (the design markup, inline-styled) and renders it,
-  with `components/effects.tsx` layering on the client-side behaviour.
-- `app/content.html` is the landing markup. The screenshots are plain `<img>` tags pointing at
-  `public/media/*` (copied from the app's README screenshots).
-- `app/_fonts.css` holds the bundled `@font-face` rules (Geist Mono, JetBrains Mono, Phosphor
-  icons) that resolve to `public/fonts/*`.
-- `components/effects.tsx` runs the phosphor cell-field canvas background, the scroll reveal,
-  and the `style-hover` behaviour. The FAQ is native `<details>`, no JS needed.
+- **Background** — a canvas of monospace cells that ignite and decay (the phosphor field).
+- **Scroll reveal** — elements marked `data-reveal` fade in via `IntersectionObserver`.
+- **Hover** — elements with a `data-hover="css;decls"` attribute apply those declarations on
+  pointer enter and revert on leave. The FAQ uses native `<details>`, so it needs no JS.
 
-To evolve it, split `content.html` into real React sections in `app/` over time. The copy,
-tokens (CSS variables on the root element), and layout are all already here.
+## Screenshots
 
-## Replacing screenshots
+The hero and feature images live in `public/media/` and are referenced by plain `<img>` tags in
+the section components. To swap one, drop a new file in `public/media/` and update the matching
+`src`. Current images: `screenshot.jpg` (hero), `feat-notifications.png`, `feat-changes.jpg`,
+`feat-files.jpg`, `feat-sessions.jpg`.
 
-Drop a new image in `public/media/` and update the matching `<img src="/media/...">` in
-`app/content.html`. Current slots: `screenshot.jpg` (hero), `feat-notifications.png`,
-`feat-changes.jpg`, `feat-files.jpg`, `feat-sessions.jpg`.
+## Notes
+
+`app/_fonts.css` and `public/fonts/*` were extracted from the original design bundle and are not
+meant to be hand-edited. Everything else is normal, editable source.

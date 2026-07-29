@@ -29,9 +29,36 @@ img {
   max-width: 100%;
 }
 
-/* the design encodes per-element hover via a `style-hover` attribute; the effects
+/* Design tokens (Minimal Dark) + base shell for the page root. Moved off the markup so
+   themes can be swapped in one place. */
+.dc-root {
+  --bg: #08080a;
+  --panel: #0f0f12;
+  --elev: #17171b;
+  --border: rgba(255, 255, 255, 0.08);
+  --border2: rgba(255, 255, 255, 0.14);
+  --text: #e8e8ea;
+  --dim: #9a9aa2;
+  --faint: #5c5c64;
+  --accent: #4ec97a;
+  --amber: #e0a94a;
+  --red: #f0625f;
+  --blue: #6aa0f0;
+
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* the design encodes per-element hover via a `data-hover` attribute; the effects
    client component applies it on pointer enter/leave. Add a soft default transition. */
-[style-hover] {
+[data-hover] {
   transition:
     color 0.15s ease,
     background 0.15s ease,

@@ -6,7 +6,7 @@ import { useEffect } from "react"
  * Client-side behaviour ported from the original design:
  *  - the phosphor cell-field canvas background (cells ignite and decay)
  *  - progressive reveal of [data-reveal] sections on scroll
- *  - per-element hover styling driven by the `style-hover` attribute
+ *  - per-element hover styling driven by the `data-hover` attribute
  * FAQ uses native <details>, so no JS is needed for it.
  */
 export function Effects() {
@@ -24,7 +24,14 @@ export function Effects() {
           CH = 26
         let cols = 0,
           rows = 0,
-          cells: Array<{ x: number; y: number; g: string; life: number; speed: number; weight: number }> = [],
+          cells: Array<{
+            x: number
+            y: number
+            g: string
+            life: number
+            speed: number
+            weight: number
+          }> = [],
           dpr = 1,
           accent = "#4ec97a"
 
@@ -73,7 +80,8 @@ export function Effects() {
                 c.g = glyphs[(Math.random() * glyphs.length) | 0]
                 c.speed = 0.0018 + Math.random() * 0.0055
               }
-              const a = (c.life < 0.12 ? c.life / 0.12 : 1 - (c.life - 0.12) / 0.88) * 0.15 * c.weight
+              const a =
+                (c.life < 0.12 ? c.life / 0.12 : 1 - (c.life - 0.12) / 0.88) * 0.15 * c.weight
               if (a <= 0.004) continue
               ctx.globalAlpha = a
               ctx.fillStyle = c.life < 0.2 ? accent : "#ffffff"
@@ -104,7 +112,8 @@ export function Effects() {
       nodes.forEach((n) => {
         n.style.opacity = "0"
         n.style.transform = "translateY(18px)"
-        n.style.transition = "opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1)"
+        n.style.transition =
+          "opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1)"
       })
       const io = new IntersectionObserver(
         (entries) => {
@@ -135,10 +144,10 @@ export function Effects() {
             return [d.slice(0, i).trim(), d.slice(i + 1).trim()] as [string, string]
           })
 
-      const hoverEls = Array.from(root.querySelectorAll<HTMLElement>("[style-hover]"))
+      const hoverEls = Array.from(root.querySelectorAll<HTMLElement>("[data-hover]"))
       const detach: Array<() => void> = []
       hoverEls.forEach((el) => {
-        const decls = parseDecls(el.getAttribute("style-hover") || "")
+        const decls = parseDecls(el.getAttribute("data-hover") || "")
         const prev = new Map<string, string>()
         const enter = () => {
           decls.forEach(([p, v]) => {
