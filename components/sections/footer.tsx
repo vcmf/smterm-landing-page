@@ -67,7 +67,7 @@ export function Footer() {
         <div style={{ marginTop: "18px", fontSize: "11.5px", color: "var(--faint)" }}>
           © 2026 smterm · MIT · built in the open by{" "}
           <a href="https://github.com/vcmf" style={{ color: "var(--faint)" }}>
-            vcmf
+            dim0 team
           </a>
         </div>
       </div>
