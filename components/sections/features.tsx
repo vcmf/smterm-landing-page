@@ -172,6 +172,62 @@ export function Features() {
               />
             </div>
           </div>
+          <div
+            style={{
+              border: "1px solid var(--border)",
+              borderRadius: "14px",
+              background: "var(--panel)",
+              padding: "26px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
+            }}
+          >
+            <div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "11px" }}
+              >
+                <i
+                  className="ph-fill ph-globe"
+                  style={{ fontSize: "19px", color: "var(--blue)" }}
+                ></i>
+                <span style={{ fontSize: "15.5px", fontWeight: "600" }}>SSH sessions</span>
+              </div>
+              <p
+                style={{ margin: "0", fontSize: "13.5px", color: "var(--dim)", lineHeight: "1.65" }}
+              >
+                Your ~/.ssh/config hosts in one picker, recent first. Open one in a tab or a split,
+                and splits stay on the host. It runs your own ssh, so keys, agents and 2FA prompts
+                work as usual.
+              </p>
+            </div>
+            <div
+              style={{
+                marginTop: "auto",
+                position: "relative",
+                width: "100%",
+                aspectRatio: "16 / 11",
+                border: "1px solid var(--border)",
+                borderRadius: "10px",
+                overflow: "hidden",
+                background: "var(--bg)",
+              }}
+            >
+              <img
+                src="/media/feat-ssh.jpg"
+                alt="Connect to host picker listing hosts from ~/.ssh/config"
+                loading="lazy"
+                style={{
+                  position: "absolute",
+                  inset: "0",
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+            </div>
+          </div>
         </div>
 
         <div
