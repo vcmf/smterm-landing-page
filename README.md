@@ -1,6 +1,6 @@
-# smterm landing page
+# minmux landing page
 
-Marketing site for [smterm](https://github.com/vcmf/smterm), a minimal terminal for agentic
+Marketing site for [minmux](https://github.com/vcmf/minmux), a minimal terminal for agentic
 coding. Built with Next.js (App Router) and exported as a static site.
 
 ## Develop

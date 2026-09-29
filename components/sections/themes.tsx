@@ -73,7 +73,7 @@ export function Themes() {
               }}
             >
               <div style={{ color: "#4ec97a" }}>
-                ~/smterm <span style={{ color: "#5c5c64" }}>$</span>{" "}
+                ~/minmux <span style={{ color: "#5c5c64" }}>$</span>{" "}
                 <span style={{ color: "#e8e8ea" }}>claude</span>
               </div>
               <div style={{ color: "#9a9aa2" }}>
@@ -152,7 +152,7 @@ export function Themes() {
               }}
             >
               <div style={{ color: "#9ece6a" }}>
-                ~/smterm <span style={{ color: "#565f89" }}>$</span>{" "}
+                ~/minmux <span style={{ color: "#565f89" }}>$</span>{" "}
                 <span style={{ color: "#c0caf5" }}>claude</span>
               </div>
               <div style={{ color: "#7982a9" }}>
@@ -220,7 +220,7 @@ export function Themes() {
               }}
             >
               <div style={{ color: "#a6e3a1" }}>
-                ~/smterm <span style={{ color: "#6c7086" }}>$</span>{" "}
+                ~/minmux <span style={{ color: "#6c7086" }}>$</span>{" "}
                 <span style={{ color: "#cdd6f4" }}>claude</span>
               </div>
               <div style={{ color: "#a6adc8" }}>
@@ -288,7 +288,7 @@ export function Themes() {
               }}
             >
               <div style={{ color: "#b8bb26" }}>
-                ~/smterm <span style={{ color: "#7c6f64" }}>$</span>{" "}
+                ~/minmux <span style={{ color: "#7c6f64" }}>$</span>{" "}
                 <span style={{ color: "#ebdbb2" }}>claude</span>
               </div>
               <div style={{ color: "#a89984" }}>
@@ -384,8 +384,8 @@ export function Themes() {
                 lineHeight: "1.9",
               }}
             >
-              <div>macOS and Linux · ~/.config/smterm/settings.json</div>
-              <div>Windows · %APPDATA%\smterm\settings.json</div>
+              <div>macOS and Linux · ~/.config/minmux/settings.json</div>
+              <div>Windows · %APPDATA%\minmux\settings.json</div>
             </div>
           </div>
           <div

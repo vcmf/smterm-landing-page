@@ -113,7 +113,7 @@ export function Hero() {
           >
             <span style={{ color: "var(--accent)" }}>$</span>
             <span style={{ color: "var(--text)", whiteSpace: "nowrap", overflowX: "auto" }}>
-              curl -fsSL https://raw.githubusercontent.com/vcmf/smterm/main/install.sh | sh
+              curl -fsSL https://raw.githubusercontent.com/vcmf/minmux/main/install.sh | sh
             </span>
             <span style={{ width: "1px", height: "16px", background: "var(--border)" }}></span>
             <i

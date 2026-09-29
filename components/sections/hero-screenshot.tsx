@@ -63,7 +63,7 @@ export function HeroScreenshot() {
                 fontFamily: "'JetBrains Mono',monospace",
               }}
             >
-              smterm
+              minmux
             </span>
           </div>
           <div
@@ -76,7 +76,7 @@ export function HeroScreenshot() {
           >
             <img
               src="/media/screenshot.jpg"
-              alt="hero shot"
+              alt="minmux with sessions in the sidebar, a diff in split panes, and the Agents board"
               loading="lazy"
               style={{
                 position: "absolute",
@@ -97,7 +97,8 @@ export function HeroScreenshot() {
             color: "var(--faint)",
           }}
         >
-          smterm running four agent sessions in split panes, with the Agents board on the right.
+          minmux with agent sessions and their PRs in the sidebar, a diff in split panes, and the
+          Agents board on the right.
         </div>
       </div>
     </>

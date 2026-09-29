@@ -81,7 +81,7 @@ export function Install() {
             >
               <span style={{ color: "var(--accent)", flexShrink: "0" }}>$</span>
               <span style={{ flex: "1", overflowX: "auto", whiteSpace: "nowrap" }}>
-                curl -fsSL https://raw.githubusercontent.com/vcmf/smterm/main/install.sh | sh
+                curl -fsSL https://raw.githubusercontent.com/vcmf/minmux/main/install.sh | sh
               </span>
               <i
                 className="ph ph-copy"
@@ -133,7 +133,7 @@ export function Install() {
             >
               <span style={{ color: "var(--blue)", flexShrink: "0" }}>&gt;</span>
               <span style={{ flex: "1", overflowX: "auto", whiteSpace: "nowrap" }}>
-                irm https://raw.githubusercontent.com/vcmf/smterm/main/install.ps1 | iex
+                irm https://raw.githubusercontent.com/vcmf/minmux/main/install.ps1 | iex
               </span>
               <i
                 className="ph ph-copy"
@@ -184,7 +184,7 @@ export function Install() {
             </p>
             <p style={{ margin: "0", fontSize: "13px", color: "var(--faint)", lineHeight: "1.6" }}>
               Logic sits in small pure modules with real tests. Design notes and decisions live in{" "}
-              <a href="https://github.com/vcmf/smterm/tree/main/docs">docs/</a>, starting with
+              <a href="https://github.com/vcmf/minmux/tree/main/docs">docs/</a>, starting with
               ARCHITECTURE.md and ROADMAP.md.
             </p>
           </div>
@@ -201,10 +201,10 @@ export function Install() {
           >
             <div>
               <span style={{ color: "var(--accent)" }}>$</span> git clone
-              https://github.com/vcmf/smterm
+              https://github.com/vcmf/minmux
             </div>
             <div>
-              <span style={{ color: "var(--accent)" }}>$</span> cd smterm
+              <span style={{ color: "var(--accent)" }}>$</span> cd minmux
             </div>
             <div>
               <span style={{ color: "var(--accent)" }}>$</span> make install{" "}
