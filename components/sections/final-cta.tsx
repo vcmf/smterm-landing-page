@@ -39,7 +39,7 @@ export function FinalCta() {
                 marginBottom: "20px",
               }}
             >
-              <span style={{ color: "var(--faint)" }}>$</span> smterm
+              <span style={{ color: "var(--faint)" }}>$</span> minmux
               <span
                 style={{
                   display: "inline-block",
@@ -75,7 +75,7 @@ export function FinalCta() {
                 lineHeight: "1.66",
               }}
             >
-              Free, MIT, and yours to fork. If smterm turns out useful to you, a star helps other
+              Free, MIT, and yours to fork. If minmux turns out useful to you, a star helps other
               people find it.
             </p>
             <div
@@ -104,10 +104,10 @@ export function FinalCta() {
                 data-hover="filter:brightness(1.1);"
               >
                 <i className="ph-bold ph-download-simple" style={{ fontSize: "16px" }}></i>Install
-                smterm
+                minmux
               </a>
               <a
-                href="https://github.com/vcmf/smterm"
+                href="https://github.com/vcmf/minmux"
                 style={{
                   display: "flex",
                   alignItems: "center",

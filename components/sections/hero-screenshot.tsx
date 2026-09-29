@@ -63,7 +63,7 @@ export function HeroScreenshot() {
                 fontFamily: "'JetBrains Mono',monospace",
               }}
             >
-              smterm
+              minmux
             </span>
           </div>
           <div
@@ -97,7 +97,7 @@ export function HeroScreenshot() {
             color: "var(--faint)",
           }}
         >
-          smterm running four agent sessions in split panes, with the Agents board on the right.
+          minmux running four agent sessions in split panes, with the Agents board on the right.
         </div>
       </div>
     </>

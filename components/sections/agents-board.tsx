@@ -59,7 +59,7 @@ export function AgentsBoard() {
                   lineHeight: "1.66",
                 }}
               >
-                A live view of the Claude Code agents you launched inside smterm. The root session,
+                A live view of the Claude Code agents you launched inside minmux. The root session,
                 its sub-agents, what each one is doing, its working directory, and the files it
                 touched. Click one to jump to its pane.
               </p>
@@ -72,7 +72,7 @@ export function AgentsBoard() {
                 }}
               >
                 It reads Claude Code's own hook events, so there is no setup and no global config to
-                edit. smterm only wires the panes it launches, which also means agents you started
+                edit. minmux only wires the panes it launches, which also means agents you started
                 somewhere else stay out of the board.
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: "11px" }}>

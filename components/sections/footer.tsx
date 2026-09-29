@@ -23,7 +23,7 @@ export function Footer() {
           <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
             <img
               src="/media/logo.png"
-              alt="smterm"
+              alt="minmux"
               style={{
                 width: "18px",
                 height: "18px",
@@ -39,7 +39,7 @@ export function Footer() {
                 fontSize: "13px",
               }}
             >
-              smterm
+              minmux
             </span>
           </div>
           <span style={{ fontSize: "12px", color: "var(--faint)" }}>
@@ -47,16 +47,16 @@ export function Footer() {
           </span>
           <div style={{ flex: "1" }}></div>
           <div style={{ display: "flex", alignItems: "center", gap: "18px", fontSize: "12px" }}>
-            <a href="https://github.com/vcmf/smterm" style={{ color: "var(--dim)" }}>
+            <a href="https://github.com/vcmf/minmux" style={{ color: "var(--dim)" }}>
               GitHub
             </a>
-            <a href="https://github.com/vcmf/smterm#readme" style={{ color: "var(--dim)" }}>
+            <a href="https://github.com/vcmf/minmux#readme" style={{ color: "var(--dim)" }}>
               README
             </a>
-            <a href="https://github.com/vcmf/smterm/tree/main/docs" style={{ color: "var(--dim)" }}>
+            <a href="https://github.com/vcmf/minmux/tree/main/docs" style={{ color: "var(--dim)" }}>
               Docs
             </a>
-            <a href="https://github.com/vcmf/smterm/issues" style={{ color: "var(--dim)" }}>
+            <a href="https://github.com/vcmf/minmux/issues" style={{ color: "var(--dim)" }}>
               Issues
             </a>
             <a href="https://dim0.net" style={{ color: "var(--dim)" }}>
@@ -65,7 +65,7 @@ export function Footer() {
           </div>
         </div>
         <div style={{ marginTop: "18px", fontSize: "11.5px", color: "var(--faint)" }}>
-          © 2026 smterm · MIT · built in the open by{" "}
+          © 2026 minmux · MIT · built in the open by{" "}
           <a href="https://dim0.net" style={{ color: "var(--faint)" }}>
             dim0 team
           </a>

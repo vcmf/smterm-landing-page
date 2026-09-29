@@ -31,7 +31,7 @@ export function Nav() {
           >
             <img
               src="/media/logo.png"
-              alt="smterm"
+              alt="minmux"
               style={{
                 width: "22px",
                 height: "22px",
@@ -48,7 +48,7 @@ export function Nav() {
                 letterSpacing: "-0.01em",
               }}
             >
-              smterm
+              minmux
             </span>
           </a>
           <div
@@ -80,7 +80,7 @@ export function Nav() {
           <div style={{ flex: "1" }}></div>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <a
-              href="https://github.com/vcmf/smterm"
+              href="https://github.com/vcmf/minmux"
               style={{
                 display: "flex",
                 alignItems: "center",

@@ -70,7 +70,7 @@ export function Faq() {
                 textWrap: "pretty",
               }}
             >
-              smterm is a normal terminal first. Tabs, resizable splits, your own shell, your own
+              minmux is a normal terminal first. Tabs, resizable splits, your own shell, your own
               directory. What it adds is a small set of panels that answer what happened while an
               agent was working: Changes, Files, and the Agents board. Nothing replaces the shell
               you already use.
@@ -181,7 +181,7 @@ export function Faq() {
                 textWrap: "pretty",
               }}
             >
-              No. smterm wires the panes it launches itself, so there is nothing to install and no
+              No. minmux wires the panes it launches itself, so there is nothing to install and no
               global config to edit. It also means an agent you started in some other terminal will
               not appear on the board.
             </p>
@@ -216,8 +216,8 @@ export function Faq() {
                 textWrap: "pretty",
               }}
             >
-              In one JSON file that is the source of truth: ~/.config/smterm/settings.json on macOS
-              and Linux, %APPDATA%\smterm\settings.json on Windows. Edit it by hand or through the
+              In one JSON file that is the source of truth: ~/.config/minmux/settings.json on macOS
+              and Linux, %APPDATA%\minmux\settings.json on Windows. Edit it by hand or through the
               in-app panel. A watcher re-applies changes as you save.
             </p>
           </details>
@@ -272,7 +272,7 @@ export function Faq() {
             style={{ fontSize: "16px", color: "var(--faint)" }}
           ></i>
           Something else on your mind?{" "}
-          <a href="https://github.com/vcmf/smterm/issues">Open an issue.</a>
+          <a href="https://github.com/vcmf/minmux/issues">Open an issue.</a>
           <span style={{ color: "var(--faint)" }}>
             What you did, what happened, and what you expected is enough.
           </span>
