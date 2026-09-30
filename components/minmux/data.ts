@@ -25,6 +25,7 @@ const CHAPTER_IDS = [
   "agents-board",
   "ssh",
   "themes",
+  "faq",
   "install",
 ] as const
 export type ChapterId = (typeof CHAPTER_IDS)[number]
@@ -46,6 +47,7 @@ const CHAPTER_META: Record<ChapterId, Omit<Chapter, "id">> = {
   "agents-board": { sub: "hooks · sub-agents", claude: "blue" },
   ssh: { sub: "~/.ssh/config" },
   themes: { sub: "4 families × light/dark" },
+  faq: { sub: "man minmux" },
   install: { sub: "one line · MIT" },
 }
 
@@ -120,6 +122,12 @@ const DEMO: Record<ChapterId, { api: Status; apiLast: string; web: Status; webLa
     webLast: "6 login tests pass",
   },
   themes: {
+    api: "done",
+    apiLast: "Migrated 7 call sites",
+    web: "done",
+    webLast: "6 login tests pass",
+  },
+  faq: {
     api: "done",
     apiLast: "Migrated 7 call sites",
     web: "done",
@@ -220,6 +228,35 @@ export function countsAt(turn: number): { running: number; waiting: number } {
   }
 }
 
+/** The FAQ: rendered on the faq turn and emitted as FAQPage structured data (one source). */
+export const FAQ: { q: string; a: string }[] = [
+  {
+    q: "How is minmux different from tmux or a normal terminal?",
+    a: "minmux is a normal terminal first: tabs, resizable splits, your own shell, your own directory. What it adds is a small set of panels that answer what happened while an agent was working: Changes, Files, and the Agents board. Nothing replaces the shell you already use.",
+  },
+  {
+    q: "Which coding agents does minmux support?",
+    a: "The Agents board reads Claude Code hook events, so Claude Code is what it understands today. The code underneath makes no assumption about which agent is running, so other agents can plug in later. Any agent CLI still runs fine in a pane; it just will not show up on the board.",
+  },
+  {
+    q: "Does minmux work on Windows?",
+    a: "Yes, on Windows and inside WSL, alongside macOS and Linux. Windows and WSL are the newest of the three targets, so they have seen less real-world use so far.",
+  },
+  {
+    q: "Do I have to configure hooks or edit a global config?",
+    a: "No. minmux wires the panes it launches itself, so there is nothing to install and no global config to edit. It also means an agent you started in some other terminal will not appear on the board.",
+  },
+  {
+    q: "Where do minmux settings live?",
+    a: "In one JSON file that is the source of truth: ~/.config/minmux/settings.json on macOS and Linux, %APPDATA%\\minmux\\settings.json on Windows. Edit it by hand or through the in-app panel; a watcher re-applies changes as you save.",
+  },
+  {
+    q: "Is minmux free and open source?",
+    a: "Yes. It is MIT licensed and open source: clone it, read it, fork it, ship your own version. If it turns out useful to you, a star helps other people find it.",
+  },
+]
+
+export const SITE_URL = "https://minmux.dev"
 export const INSTALL_SH =
   "curl -fsSL https://raw.githubusercontent.com/vcmf/minmux/main/install.sh | sh"
 export const INSTALL_PS = "irm https://raw.githubusercontent.com/vcmf/minmux/main/install.ps1 | iex"

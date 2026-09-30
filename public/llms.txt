@@ -1,0 +1,38 @@
+# minmux
+
+> minmux is a free, open-source (MIT) terminal for people who run coding agents like Claude Code all day. It is a normal terminal first — tabs, resizable split panes, real shells — plus panels that show what the agents actually did. It runs on macOS, Linux, Windows and WSL.
+
+"You run the agents. You still read the code." An open-source alternative if you have been looking for Warp without the lock-in, or tmux that understands agents.
+
+## Features
+
+- Tabs and resizable split panes with your own shell, prompt and directory; a split opens in the same directory.
+- Per-session status (running, needs input, done/idle) as a dot on the tab and a line in the sidebar; a background pane that asks a question sends a native OS notification.
+- Changes panel: a git diff for the focused pane's directory, with per-file counts and the full unified diff; branch and ahead/behind in the status bar.
+- Files panel: the focused pane's directory as a tree with a breadcrumb; click a file to preview it with line numbers and syntax colour, or open it in your editor.
+- Agents board: every Claude Code session and sub-agent launched in minmux, what each is doing, its directory and recent files. It reads Claude Code's own hook events, so there is no setup and no global config. Click an agent to jump to its pane.
+- SSH: hosts from ~/.ssh/config in one picker, recent first; open one in a tab or a split, and splits stay on the host. It runs your own ssh, so keys, agents and 2FA prompts work as usual.
+- Themes: four families (Minimal, Tokyo Night, Catppuccin, Gruvbox), each in light and dark. Settings live in one JSON file, re-applied as you save.
+
+## Install
+
+- macOS and Linux: `curl -fsSL https://raw.githubusercontent.com/vcmf/minmux/main/install.sh | sh`
+- Windows (PowerShell): `irm https://raw.githubusercontent.com/vcmf/minmux/main/install.ps1 | iex`
+- From source: `git clone https://github.com/vcmf/minmux && cd minmux`, then `make install` and `make build`.
+
+## FAQ
+
+- How is minmux different from tmux or a normal terminal? minmux is a normal terminal first: tabs, resizable splits, your own shell, your own directory. What it adds is a small set of panels that answer what happened while an agent was working: Changes, Files, and the Agents board. Nothing replaces the shell you already use.
+- Which coding agents does minmux support? The Agents board reads Claude Code hook events, so Claude Code is what it understands today. Other agents can plug in later. Any agent CLI still runs fine in a pane; it just will not show up on the board.
+- Does minmux work on Windows? Yes, on Windows and inside WSL, alongside macOS and Linux. Windows and WSL are the newest targets, so they have seen less real-world use so far.
+- Do I have to configure hooks or edit a global config? No. minmux wires the panes it launches itself. An agent started in some other terminal will not appear on the board.
+- Where do settings live? ~/.config/minmux/settings.json on macOS and Linux, %APPDATA%\minmux\settings.json on Windows. A watcher re-applies changes as you save.
+- Is minmux free and open source? Yes, MIT licensed.
+
+## Links
+
+- [Website](https://minmux.dev/)
+- [Source code on GitHub](https://github.com/vcmf/minmux)
+- [Documentation](https://github.com/vcmf/minmux/tree/main/docs)
+- [Issues](https://github.com/vcmf/minmux/issues)
+- Built by the [dim0 team](https://dim0.net)

@@ -3,6 +3,7 @@ import {
   INSTALL_PS,
   INSTALL_SH,
   GITHUB,
+  FAQ,
   turnOf,
   type Appearance,
   type ChapterId,
@@ -45,10 +46,7 @@ function Band({ id, title, children }: { id: ChapterId; title: string; children:
       <span className="mm-band-n">
         {String(turnOf(id)).padStart(2, "0")} · {id}
       </span>
-      <h2 id={`${id}-h`}>
-        <span className="c-subtle"># </span>
-        {title}
-      </h2>
+      <h2 id={`${id}-h`}>{title}</h2>
       <p>{children}</p>
     </header>
   )
@@ -187,7 +185,7 @@ export function Turns({
           </div>
           <Wordmark />
           <div className="mm-hero-copy a-in" style={d(0.8)}>
-            <span className="mm-eyebrow"># a terminal for agentic coding</span>
+            <span className="mm-eyebrow">a terminal for agentic coding</span>
             <h1 id="welcome-h">
               You run the agents. You still read the code.
               <span className="mm-caret a-caret" aria-hidden="true" />
@@ -196,6 +194,10 @@ export function Turns({
               A fast, cross-platform terminal with tabs, split panes and real shells, for people who
               run coding agents all day. It stays out of your way like any terminal, then adds the
               panels that show what your agents actually did.
+            </p>
+            <p className="mm-hero-alt">
+              An open-source alternative if you have been looking for Warp without the lock-in, or
+              tmux that understands agents.
             </p>
           </div>
           <div className="mm-hero-install a-in" style={d(1.05)}>
@@ -553,6 +555,38 @@ export function Turns({
             <span className="tok-key">"cursorBlink"</span>: <span className="tok-kw">true</span>
             {"\n}"}
           </pre>
+        </div>
+      </Turn>
+
+      {/* faq: a man page; the same entries feed the FAQPage structured data */}
+      <Turn id="faq" turn={turn}>
+        <Band id="faq" title="Questions people ask.">
+          The short answers. Something else on your mind?{" "}
+          <a href={`${GITHUB}/issues`} className="mm-inline-link">
+            Open an issue
+          </a>
+          : what you did, what happened, and what you expected is enough.
+        </Band>
+        <div className="mm-panes">
+          <div className="mm-pane">
+            <PaneHead name="man minmux" status="idle" shell={null} />
+            <div className="mm-man">
+              <div className="mm-man-head" aria-hidden="true">
+                <span>MINMUX(1)</span>
+                <span>User Commands</span>
+                <span>MINMUX(1)</span>
+              </div>
+              <h3 className="mm-man-sec">FAQ</h3>
+              <dl className="mm-faq">
+                {FAQ.map((f, i) => (
+                  <div key={f.q} className="a-in" style={d(0.1 + i * 0.06)}>
+                    <dt>{f.q}</dt>
+                    <dd>{f.a}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
         </div>
       </Turn>
 
