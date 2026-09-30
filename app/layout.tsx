@@ -22,9 +22,16 @@ export const metadata: Metadata = {
   },
 }
 
+/** Applies a saved dark choice before first paint, so a dark visitor never sees a light flash. */
+const PREPAINT = `try{if(localStorage.getItem("mm-appearance")==="dark")document.documentElement.dataset.palette="minimal-dark"}catch(e){}`
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    // the pre-paint script may set data-palette before hydration
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: PREPAINT }} />
+      </head>
       <body>{children}</body>
     </html>
   )

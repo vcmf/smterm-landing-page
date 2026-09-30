@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { IconCheck, IconCopy } from "./icons"
+import { Ph } from "./icons"
 
 export function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false)
@@ -22,7 +22,7 @@ export function CopyButton({ text }: { text: string }) {
       aria-label={copied ? "Copied" : "Copy command"}
       data-copied={copied}
     >
-      {copied ? <IconCheck /> : <IconCopy />}
+      <Ph name={copied ? "check" : "copy"} size={15} />
     </button>
   )
 }
