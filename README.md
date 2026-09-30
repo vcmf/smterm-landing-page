@@ -23,50 +23,37 @@ Other scripts: `npm run lint`, `npm run format` (Prettier), `npm run format:chec
 
 ## Structure
 
+The page is a scripted minmux window. On desktop it is a sticky 100vh stage: each scroll step
+(snap) plays the next "turn", and the sessions sidebar is the table of contents. On phones
+(or short windows) the turns stack as plain sections with a tmux-style strip at the bottom.
+
 ```
 app/
-  layout.tsx        metadata (title, description, Open Graph) + globals import
-  page.tsx          composes the section components in order
-  globals.css       reset, design tokens (.dc-root), base styles
-  _fonts.css        bundled @font-face rules (generated; not hand-edited)
-components/
-  effects.tsx       client behaviour: canvas background, scroll reveal, hover
-  sections/         one component per page section
-    background-fx.tsx  animated phosphor cell-field + gradients
-    nav.tsx
-    hero.tsx
-    hero-screenshot.tsx
-    problem.tsx
-    features.tsx
-    agents-board.tsx
-    why.tsx
-    themes.tsx
-    install.tsx
-    faq.tsx
-    final-cta.tsx
-    footer.tsx
+  layout.tsx          metadata (title, description, Open Graph)
+  page.tsx            renders <Landing />
+  tokens.css          palettes (the app's themes.ts values) + semantic tokens components use
+  globals.css         layout, components, motion; semantic tokens only, no literal colours
+  _fonts.css          bundled @font-face rules for Geist Mono + JetBrains Mono
+components/minmux/
+  data.ts             chapters (= sidebar sessions) and per-turn demo state
+  turns.tsx           the nine turns (narration + scripted panes), SVG wordmark, Changes panel
+  landing.tsx         client shell: scroll → turn, ⌘K palette, light/dark toggle, panels
+  copy-button.tsx     copy-to-clipboard for install commands
+  icons.tsx           Phosphor icons (@phosphor-icons/react, as in the app) + the Claude mark
 public/
-  fonts/            Geist Mono, JetBrains Mono, Phosphor icons (woff2/woff/ttf)
-  media/            screenshots (from the app README), logo, icon
+  fonts/              Geist Mono, JetBrains Mono (woff2)
+  media/              icon, logo, screenshots (Open Graph image)
 ```
 
-Each section is a plain component. Styling is inline (the design's original approach) and reads
-from CSS-variable tokens defined on `.dc-root` in `globals.css`, so re-theming happens in one
-place. Icons are the [Phosphor](https://phosphoricons.com) font (`<i class="ph ...">`).
+Theming works like the app: `data-palette` on `<html>` is theme family × appearance
+(`minimal-light` by default, `tokyo-*` on the themes turn). Components read semantic tokens
+(`--surface`, `--status-waiting`, `--code-keyword`, …) from `tokens.css`, never palette keys.
 
-### Interactivity (`components/effects.tsx`)
-
-- **Background** — a canvas of monospace cells that ignite and decay (the phosphor field).
-- **Scroll reveal** — elements marked `data-reveal` fade in via `IntersectionObserver`.
-- **Hover** — elements with a `data-hover="css;decls"` attribute apply those declarations on
-  pointer enter and revert on leave. The FAQ uses native `<details>`, so it needs no JS.
-
-## Screenshots
-
-The hero and feature images live in `public/media/` and are referenced by plain `<img>` tags in
-the section components. To swap one, drop a new file in `public/media/` and update the matching
-`src`. Current images: `screenshot.jpg` (hero), `feat-notifications.png`, `feat-changes.jpg`,
-`feat-files.jpg`, `feat-sessions.jpg`.
+To change a turn's copy or script, edit `turns.tsx`; to change what the sidebar, tabs and
+agents panel show at each turn, edit `data.ts`. Chapters are referenced by id (`turnOf("files")`),
+never by number, so adding or reordering one is a single edit to `CHAPTER_IDS`. All headline and paragraph copy is real HTML
+(h1/h2/p) and every turn is in the static export, so it stays indexable. Motion is CSS only
+and switches off under `prefers-reduced-motion`.
 
 ## Notes
 
