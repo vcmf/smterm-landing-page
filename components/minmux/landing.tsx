@@ -18,7 +18,7 @@ import {
   tabsAt,
 } from "./data"
 import { Changes, FilePreview, FilesPanel, Turns } from "./turns"
-import { ClaudeIcon, Ph, type IconName } from "./icons"
+import { AgentMark, Ph, type IconName } from "./icons"
 
 /** The app's right-panel toggles; each jumps to the turn that shows its panel. */
 const PANEL_BUTTONS: { turn: number; icon: IconName; label: string }[] = [
@@ -188,10 +188,8 @@ export function Landing() {
               {tabs.map((t) => (
                 <div key={t.name} className="mm-tab" data-active={t.active}>
                   <span className="mm-dot" data-s={t.status} />
-                  <span>
-                    {t.claude && <span className="c-subtle">✻ </span>}
-                    {t.name}
-                  </span>
+                  {t.agent && <AgentMark kind={t.agent} size={12} className="mm-tab-mark" />}
+                  <span>{t.name}</span>
                   {t.count && <span className="c-subtle mm-small">{t.count}</span>}
                 </div>
               ))}
@@ -265,8 +263,12 @@ export function Landing() {
                         goTo(i)
                       }}
                     >
-                      {c.claude ? (
-                        <ClaudeIcon size={15} color={`var(--cc-${c.claude})`} />
+                      {c.agent ? (
+                        <AgentMark
+                          kind={c.agent.kind}
+                          size={15}
+                          color={`var(--cc-${c.agent.color})`}
+                        />
                       ) : (
                         <Ph name="terminal-window" fill size={16} />
                       )}
@@ -333,7 +335,9 @@ export function Landing() {
                   {agents.map((a) => (
                     <div key={a.group} className="mm-agent">
                       <span className="mm-agent-group">
-                        <Ph name="tree-structure" size={13} />✻ {a.group}
+                        <Ph name="tree-structure" size={13} />
+                        <AgentMark kind={a.agent} size={12} />
+                        {a.group}
                       </span>
                       <div className="mm-tree-row mm-tree-parent">
                         <span className="mm-dot" data-s={a.status} />

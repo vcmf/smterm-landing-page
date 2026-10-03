@@ -925,7 +925,6 @@ b {
   line-height: 1.08;
   letter-spacing: -0.035em;
   font-weight: 600;
-  max-width: 18ch;
   text-wrap: balance;
 }
 .mm-hero-copy p {
@@ -935,13 +934,29 @@ b {
   color: var(--muted-foreground);
   text-wrap: pretty;
 }
-.mm-caret {
+/* hero: the agent command typed in place (claude → codex → opencode) */
+.mm-agent-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22em;
+  padding: 0 0.18em;
+  border-radius: 8px;
+  background: var(--surface-active);
+  white-space: nowrap;
+}
+.mm-agent-cmd-mark {
+  width: 0.7em;
+  height: 0.7em;
+}
+.mm-agent-cmd-caret {
   display: inline-block;
   width: 0.5em;
   height: 0.85em;
-  margin-left: 0.12em;
-  vertical-align: -0.04em;
   background: var(--brand);
+}
+.mm-pane-mark,
+.mm-tab-mark {
+  color: var(--muted-foreground);
 }
 .mm-hero-copy .mm-hero-alt {
   font-size: 13px;

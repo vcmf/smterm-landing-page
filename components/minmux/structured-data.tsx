@@ -18,7 +18,7 @@ const GRAPH = {
       name: "minmux",
       url: `${SITE_URL}/`,
       description:
-        "A fast, cross-platform terminal for people who run coding agents all day: tabs, split panes and real shells, plus panels that show what the agents did — per-session status and notifications, a git Changes panel, a Files browser with preview, and an Agents board fed by Claude Code hook events.",
+        "A fast, cross-platform terminal for people who run coding agents all day: tabs, split panes and real shells, plus panels that show what the agents did — per-session status and notifications, a git Changes panel, a Files browser with preview, and an Agents board for Claude Code, Codex and OpenCode sessions.",
       applicationCategory: "DeveloperApplication",
       applicationSubCategory: "Terminal emulator",
       operatingSystem: "macOS, Linux, Windows, WSL",
@@ -35,7 +35,8 @@ const GRAPH = {
         "Native notifications when a background pane needs input",
         "Changes panel: git diff for the focused pane's directory",
         "Files panel with breadcrumb and file preview",
-        "Agents board of Claude Code sessions and sub-agents, no setup",
+        "Agents board for Claude Code, Codex and OpenCode: sessions, sub-agents, status and tokens",
+        "Agent sessions resume in the same pane when minmux reopens",
         "SSH host picker from ~/.ssh/config",
         "Theme families in light and dark, configured in one JSON file",
       ],

@@ -1,5 +1,7 @@
 /** Scripted content for the landing page: chapters (= sidebar sessions) and per-turn demo state. */
 
+import type { AgentKind } from "./icons"
+
 export type Appearance = "light" | "dark"
 
 export type Status = "idle" | "running" | "waiting" | "done"
@@ -11,8 +13,8 @@ export const STATUS_LABEL: Record<Status, string> = {
   done: "done",
 }
 
-/** Claude Code `/color` names (src/lib/session-color.ts); swatches are `--cc-<name>` tokens. */
-export type ClaudeColor =
+/** Session colours (the app's src/lib/session-color.ts); swatches are `--cc-<name>` tokens. */
+export type SessionColor =
   "red" | "blue" | "green" | "yellow" | "purple" | "orange" | "pink" | "cyan"
 
 const CHAPTER_IDS = [
@@ -33,18 +35,18 @@ export type ChapterId = (typeof CHAPTER_IDS)[number]
 export interface Chapter {
   id: ChapterId
   sub: string
-  /** Agent-centred chapters show the Claude mark in their colour; the rest a terminal icon. */
-  claude?: ClaudeColor
+  /** Agent-centred chapters show that agent's mark in a session colour; the rest a terminal icon. */
+  agent?: { kind: AgentKind; color: SessionColor }
 }
 
 const CHAPTER_META: Record<ChapterId, Omit<Chapter, "id">> = {
   welcome: { sub: "~/minmux · main" },
-  "run-agents": { sub: "tabs · real shells", claude: "orange" },
-  "split-panes": { sub: "splits keep your cwd", claude: "purple" },
-  notifications: { sub: "tells you when it asks", claude: "pink" },
+  "run-agents": { sub: "tabs · real shells", agent: { kind: "claude", color: "orange" } },
+  "split-panes": { sub: "splits keep your cwd", agent: { kind: "codex", color: "purple" } },
+  notifications: { sub: "tells you when it asks", agent: { kind: "codex", color: "pink" } },
   changes: { sub: "git diff, per file" },
   files: { sub: "browse · preview" },
-  "agents-board": { sub: "hooks · sub-agents", claude: "blue" },
+  "agents-board": { sub: "claude · codex · opencode", agent: { kind: "opencode", color: "blue" } },
   ssh: { sub: "~/.ssh/config" },
   themes: { sub: "4 families × light/dark" },
   faq: { sub: "man minmux" },
@@ -143,6 +145,7 @@ const DEMO: Record<ChapterId, { api: Status; apiLast: string; web: Status; webLa
 const demoAt = (turn: number) => DEMO[CHAPTER_IDS[turn]]
 
 export interface AgentCard {
+  agent: AgentKind
   group: string
   cwd: string
   status: Status
@@ -156,6 +159,7 @@ export function agentsAt(turn: number): AgentCard[] {
   const d = demoAt(turn)
   return [
     {
+      agent: "claude",
       group: "api",
       cwd: "~/api",
       status: d.api,
@@ -170,6 +174,7 @@ export function agentsAt(turn: number): AgentCard[] {
           : [],
     },
     {
+      agent: "codex",
       group: "web",
       cwd: "~/web",
       status: d.web,
@@ -178,6 +183,7 @@ export function agentsAt(turn: number): AgentCard[] {
       kids: [],
     },
     {
+      agent: "opencode",
       group: "docs",
       cwd: "~/docs",
       status: "done",
@@ -193,7 +199,7 @@ export interface DemoTab {
   count: string
   status: Status
   active: boolean
-  claude: boolean
+  agent?: AgentKind
 }
 
 /** Top-bar tabs for a given turn. */
@@ -205,17 +211,16 @@ export function tabsAt(turn: number): DemoTab[] {
       count: "",
       status: "running",
       active: turn === 0 || turn > AGENTS_TURN,
-      claude: false,
     },
     {
       name: "api",
       count: turn >= AGENTS_TURN ? "3" : "",
       status: d.api,
       active: turn >= 1 && turn <= AGENTS_TURN && turn !== NOTIFY_TURN,
-      claude: true,
+      agent: "claude",
     },
-    { name: "web", count: "", status: d.web, active: turn === NOTIFY_TURN, claude: true },
-    { name: "docs", count: "", status: "done", active: false, claude: true },
+    { name: "web", count: "", status: d.web, active: turn === NOTIFY_TURN, agent: "codex" },
+    { name: "docs", count: "", status: "done", active: false, agent: "opencode" },
   ]
 }
 
@@ -236,15 +241,15 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Which coding agents does minmux support?",
-    a: "The Agents board reads Claude Code hook events, so Claude Code is what it understands today. The code underneath makes no assumption about which agent is running, so other agents can plug in later. Any agent CLI still runs fine in a pane; it just will not show up on the board.",
+    a: "Claude Code, Codex and OpenCode. Run claude, codex or opencode in any pane and the Agents board shows the session, its sub-agents, what each is doing and its token use, and the session comes back in the same pane when you reopen minmux. Any other agent CLI still runs fine in a pane; it just will not show up on the board.",
   },
   {
     q: "Does minmux work on Windows?",
-    a: "Yes, on Windows and inside WSL, alongside macOS and Linux. Windows and WSL are the newest of the three targets, so they have seen less real-world use so far.",
+    a: "Yes, on Windows and inside WSL, alongside macOS and Linux. Windows and WSL are the newest of the three targets, so they have seen less real-world use so far, and Codex and OpenCode are not wired there yet (Claude Code is).",
   },
   {
     q: "Do I have to configure hooks or edit a global config?",
-    a: "No. minmux wires the panes it launches itself, so there is nothing to install and no global config to edit. It also means an agent you started in some other terminal will not appear on the board.",
+    a: "No global config to edit: minmux wires only the panes it launches, so agents started outside minmux do not show up. Claude Code and OpenCode need no setup at all. Codex asks you to approve minmux's hooks once: type /hooks in Codex and press t. Each integration can be switched off in Settings.",
   },
   {
     q: "Where do minmux settings live?",

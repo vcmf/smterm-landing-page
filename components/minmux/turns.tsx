@@ -10,7 +10,8 @@ import {
   type Status,
 } from "./data"
 import { CopyButton } from "./copy-button"
-import { Ph } from "./icons"
+import { AgentRotator } from "./agent-rotator"
+import { AgentMark, Ph, type AgentKind } from "./icons"
 
 const d = (s: number): CSSProperties => ({ animationDelay: `${s}s` })
 
@@ -57,15 +58,18 @@ function PaneHead({
   status,
   right,
   shell = "ZSH",
+  agent,
 }: {
   name: string
   status: Status
   right?: ReactNode
   shell?: string | null
+  agent?: AgentKind
 }) {
   return (
     <div className="mm-pane-head">
       <span className="mm-dot" data-s={status} />
+      {agent && <AgentMark kind={agent} size={13} className="mm-pane-mark" />}
       <span className="mm-pane-name">{name}</span>
       {shell && <span className="mm-badge">{shell}</span>}
       <span className="mm-grow" />
@@ -186,14 +190,18 @@ export function Turns({
           <Wordmark />
           <div className="mm-hero-copy a-in" style={d(0.8)}>
             <span className="mm-eyebrow">a terminal for agentic coding</span>
-            <h1 id="welcome-h">
-              You run the agents. You still read the code.
-              <span className="mm-caret a-caret" aria-hidden="true" />
+            <h1
+              id="welcome-h"
+              aria-label="You run Claude Code, Codex or OpenCode. You still read the code."
+            >
+              You run <AgentRotator active={turn === 0} />.
+              <br />
+              You still read the code.
             </h1>
             <p>
               A fast, cross-platform terminal with tabs, split panes and real shells, for people who
-              run coding agents all day. It stays out of your way like any terminal, then adds the
-              panels that show what your agents actually did.
+              run Claude Code, Codex or OpenCode all day. It stays out of your way like any
+              terminal, then adds the panels that show what your agents actually did.
             </p>
             <p className="mm-hero-alt">
               An open-source alternative if you have been looking for Warp without the lock-in, or
@@ -231,12 +239,12 @@ export function Turns({
       {/* run the agents */}
       <Turn id="run-agents" turn={turn}>
         <Band id="run-agents" title="Launch as many agents as you like.">
-          Each one gets a real shell, in its own tab or pane. Your shell, your prompt, your
-          directory: minmux is a normal terminal first.
+          Claude Code, Codex, OpenCode: each one gets a real shell, in its own tab or pane. Your
+          shell, your prompt, your directory: minmux is a normal terminal first.
         </Band>
         <div className="mm-panes">
           <div className="mm-pane">
-            <PaneHead name="✻ api" status="running" />
+            <PaneHead name="api" agent="claude" status="running" />
             <div className="mm-term" aria-hidden="true">
               <div className="a-type">
                 <Prompt cwd="~/api" cmd="claude" />
@@ -279,7 +287,7 @@ export function Turns({
         </Band>
         <div className="mm-panes">
           <div className="mm-pane">
-            <PaneHead name="✻ api" status="running" />
+            <PaneHead name="api" agent="claude" status="running" />
             <div className="mm-term" aria-hidden="true">
               <div className="c-muted">
                 <span className="c-subtle">&gt;</span> add rate limiting to the auth routes
@@ -299,10 +307,10 @@ export function Turns({
             </div>
           </div>
           <div className="mm-pane a-grow">
-            <PaneHead name="✻ web" status="running" />
+            <PaneHead name="web" agent="codex" status="running" />
             <div className="mm-term" aria-hidden="true">
               <div className="a-type" style={d(0.45)}>
-                <Prompt cwd="~/web" cmd="claude" />
+                <Prompt cwd="~/web" cmd="codex" />
               </div>
               <div className="a-in" style={d(1.2)}>
                 <span className="c-subtle">&gt;</span> write e2e tests for the login form
@@ -329,7 +337,7 @@ export function Turns({
         </Band>
         <div className="mm-panes">
           <div className="mm-pane mm-pane-dim">
-            <PaneHead name="✻ api" status="running" />
+            <PaneHead name="api" agent="claude" status="running" />
             <div className="mm-term" aria-hidden="true">
               <div>
                 <Tool name="Bash" arg="npm test -- auth" />
@@ -342,7 +350,8 @@ export function Turns({
           </div>
           <div className="mm-pane mm-pane-wait">
             <PaneHead
-              name="✻ web"
+              name="web"
+              agent="codex"
               status="waiting"
               right={<span className="c-warn mm-small">needs input</span>}
             />
@@ -351,12 +360,11 @@ export function Turns({
                 <Tool name="Write" arg="e2e/login.spec.ts" />
               </div>
               <div className="mm-permission a-in" style={d(0.3)}>
-                <b>Bash command</b>
+                <b>Allow command?</b>
                 <span className="c-muted">npx prisma migrate dev --name add_sessions</span>
-                <span className="mm-gap">Do you want to proceed?</span>
-                <span className="c-brand">❯ 1. Yes</span>
-                <span className="c-muted"> 2. Yes, and don't ask again this session</span>
-                <span className="c-muted"> 3. No, and tell Claude what to do differently</span>
+                <span className="c-brand mm-gap">❯ 1. Yes</span>
+                <span className="c-muted"> 2. Yes, and don't ask again for this command</span>
+                <span className="c-muted"> 3. No, and tell Codex what to do differently</span>
               </div>
             </div>
           </div>
@@ -366,7 +374,7 @@ export function Turns({
           <div>
             <b>web needs input</b>
             <span className="c-muted">
-              Claude wants to run a migration. Click to jump to the pane.
+              Codex wants to run a migration. Click to jump to the pane.
             </span>
           </div>
           <span className="c-subtle mm-small">now</span>
@@ -382,7 +390,8 @@ export function Turns({
         <div className="mm-panes">
           <div className="mm-pane">
             <PaneHead
-              name="✻ api"
+              name="api"
+              agent="claude"
               status="done"
               right={<span className="c-muted mm-small">done</span>}
             />
@@ -410,7 +419,8 @@ export function Turns({
         <div className="mm-panes">
           <div className="mm-pane">
             <PaneHead
-              name="✻ api"
+              name="api"
+              agent="claude"
               status="done"
               right={<span className="c-muted mm-small">done</span>}
             />
@@ -431,12 +441,12 @@ export function Turns({
       {/* agents board */}
       <Turn id="agents-board" turn={turn}>
         <Band id="agents-board" title="Every agent and sub-agent, on one board.">
-          It reads Claude Code's own hook events, so there is no setup and no global config to edit.
-          Click an agent to jump to its pane.
+          Claude Code, Codex and OpenCode side by side: each session, its sub-agents, what they are
+          doing and their tokens. No global config to edit. Click an agent to jump to its pane.
         </Band>
         <div className="mm-panes">
           <div className="mm-pane">
-            <PaneHead name="✻ api" status="running" />
+            <PaneHead name="api" agent="claude" status="running" />
             <div className="mm-term" aria-hidden="true">
               <div className="c-muted">
                 <span className="c-subtle">&gt;</span> find every place we call the old limiter and
