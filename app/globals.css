@@ -913,6 +913,7 @@ b {
   flex-direction: column;
   gap: 14px;
   font-family: var(--chrome);
+  container-type: inline-size; /* the h1 sizes itself from this column */
 }
 .mm-eyebrow {
   font-size: 12px;
@@ -920,12 +921,21 @@ b {
   text-transform: uppercase;
   color: var(--muted-foreground);
 }
+/* sized from its own column, so the longest fixed line ("You still read the code.", 24ch at
+   ~0.565em each with the tight tracking) always fits on one line */
 .mm-hero h1 {
-  font-size: clamp(32px, 3.3vw, 46px);
+  font-size: clamp(20px, calc(100cqi / 14.2), 46px);
   line-height: 1.08;
   letter-spacing: -0.035em;
   font-weight: 600;
-  text-wrap: balance;
+}
+/* each phrase is its own line and never wraps, so the typed word can't move the other one */
+.mm-h1-line {
+  display: block;
+  white-space: nowrap;
+}
+.mm-h1-line:has(.mm-agent-cmd-still) {
+  white-space: normal;
 }
 .mm-hero-copy p {
   max-width: 62ch;
@@ -935,23 +945,21 @@ b {
   text-wrap: pretty;
 }
 /* hero: the agent command typed in place (claude → codex → opencode) */
-.mm-agent-cmd {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.22em;
-  padding: 0 0.18em;
-  border-radius: 8px;
-  background: var(--surface-active);
-  white-space: nowrap;
+.mm-agent-cmd [data-agent="claude"] {
+  color: var(--agent-claude);
 }
-.mm-agent-cmd-mark {
-  width: 0.7em;
-  height: 0.7em;
+.mm-agent-cmd [data-agent="codex"] {
+  color: var(--agent-codex);
+}
+.mm-agent-cmd [data-agent="opencode"] {
+  color: var(--agent-opencode);
 }
 .mm-agent-cmd-caret {
   display: inline-block;
   width: 0.5em;
   height: 0.85em;
+  margin-left: 0.06em;
+  vertical-align: -0.06em;
   background: var(--brand);
 }
 .mm-pane-mark,
@@ -1549,9 +1557,6 @@ b {
   }
   .mm-logo {
     width: min(100%, 360px);
-  }
-  .mm-hero h1 {
-    font-size: 31px;
   }
   .mm-cue {
     display: none;

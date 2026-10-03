@@ -1,11 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { AgentMark, type AgentKind } from "./icons"
+import type { AgentKind } from "./icons"
 
-/** The agents the hero cycles through, as the commands you'd type to start them. */
-const AGENTS: { kind: AgentKind; cmd: string; color?: string }[] = [
-  { kind: "claude", cmd: "claude", color: "var(--cc-orange)" },
+/** The agents the hero cycles through, as the commands you'd type to start them; each word is
+ *  drawn in its agent's identity colour (`--agent-<kind>`). */
+const AGENTS: { kind: AgentKind; cmd: string }[] = [
+  { kind: "claude", cmd: "claude" },
   { kind: "codex", cmd: "codex" },
   { kind: "opencode", cmd: "opencode" },
 ]
@@ -45,13 +46,23 @@ export function AgentRotator({ active }: { active: boolean }) {
   }, [active, still, i, n, erasing])
 
   if (still) {
-    return <span className="mm-agent-cmd">&lt;{AGENTS.map((a) => a.cmd).join(" | ")}&gt;</span>
+    return (
+      <span className="mm-agent-cmd mm-agent-cmd-still">
+        &lt;
+        {AGENTS.map((a, k) => (
+          <span key={a.kind}>
+            {k > 0 && " | "}
+            <span data-agent={a.kind}>{a.cmd}</span>
+          </span>
+        ))}
+        &gt;
+      </span>
+    )
   }
   const a = AGENTS[i]
   return (
     <span className="mm-agent-cmd">
-      <AgentMark kind={a.kind} color={a.color} className="mm-agent-cmd-mark" />
-      <span>{a.cmd.slice(0, n)}</span>
+      <span data-agent={a.kind}>{a.cmd.slice(0, n)}</span>
       <span className="mm-agent-cmd-caret a-caret" />
     </span>
   )

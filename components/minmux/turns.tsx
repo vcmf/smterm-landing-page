@@ -194,9 +194,11 @@ export function Turns({
               id="welcome-h"
               aria-label="You run Claude Code, Codex or OpenCode. You still read the code."
             >
-              You run <AgentRotator active={turn === 0} />.
-              <br />
-              You still read the code.
+              {/* one fixed line per phrase: only the typed word changes, nothing reflows */}
+              <span className="mm-h1-line">
+                You run <AgentRotator active={turn === 0} />.
+              </span>
+              <span className="mm-h1-line">You still read the code.</span>
             </h1>
             <p>
               A fast, cross-platform terminal with tabs, split panes and real shells, for people who
