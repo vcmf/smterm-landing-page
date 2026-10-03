@@ -4,7 +4,7 @@ import "./globals.css"
 
 const TITLE = "minmux — open-source terminal for running coding agents"
 const DESCRIPTION =
-  "Free, open-source (MIT) terminal for running coding agents like Claude Code: tabs, split panes, real shells, agent status and notifications, git diffs and a file browser. macOS, Linux, Windows and WSL."
+  "Free, open-source (MIT) terminal for running Claude Code, Codex and OpenCode: tabs, split panes, real shells, agent status and notifications, git diffs and a file browser. macOS, Linux, Windows and WSL."
 const OG_IMAGE = {
   url: "/media/og.png",
   width: 1200,

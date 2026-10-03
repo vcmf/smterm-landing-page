@@ -85,10 +85,12 @@
   --shadow: rgba(0, 0, 0, 0.7);
 }
 
-/* Claude Code /color swatches, per scheme (src/lib/session-color.ts SWATCHES) */
+/* Claude Code /color swatches, per scheme (src/lib/session-color.ts SWATCHES), and the
+   agents' identity colours: Claude's clay (deeper on light schemes, for contrast) */
 :root,
 [data-palette="minimal-light"],
 [data-palette="tokyo-light"] {
+  --agent-claude: #c96442;
   --cc-red: #d33a47;
   --cc-blue: #2f6fdb;
   --cc-green: #1f9d55;
@@ -100,6 +102,7 @@
 }
 [data-palette="minimal-dark"],
 [data-palette="tokyo-dark"] {
+  --agent-claude: #d97757;
   --cc-red: #f0625f;
   --cc-blue: #5b9cf5;
   --cc-green: #4ec97a;
@@ -155,6 +158,10 @@
   --code-key: var(--blue);
   --term-cwd: var(--accent);
   --term-branch: var(--blue);
+
+  /* agents' identity colours (Claude's clay is set per scheme above) */
+  --agent-codex: var(--cc-blue);
+  --agent-opencode: var(--cc-purple);
 
   /* typography */
   --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
