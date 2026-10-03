@@ -159,9 +159,9 @@
   --term-cwd: var(--accent);
   --term-branch: var(--blue);
 
-  /* agents' identity colours; Codex and OpenCode have monochrome identities */
-  --agent-codex: var(--text);
-  --agent-opencode: var(--text);
+  /* agents' identity colours (Claude's clay is set per scheme above) */
+  --agent-codex: var(--cc-blue);
+  --agent-opencode: var(--cc-purple);
 
   /* typography */
   --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
