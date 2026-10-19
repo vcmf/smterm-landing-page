@@ -1,9 +1,13 @@
 import type { CSSProperties, ReactNode } from "react"
 import {
+  AGENTS_TURN,
   INSTALL_PS,
   INSTALL_SH,
   GITHUB,
   FAQ,
+  MAKER,
+  TEAM,
+  agentsAt,
   turnOf,
   type Appearance,
   type ChapterId,
@@ -11,6 +15,8 @@ import {
 } from "./data"
 import { CopyButton } from "./copy-button"
 import { AgentRotator } from "./agent-rotator"
+import { AgentsPanel } from "./agents-panel"
+import { PullRequests } from "./pull-requests"
 import { AgentMark, Ph, type AgentKind } from "./icons"
 
 const d = (s: number): CSSProperties => ({ animationDelay: `${s}s` })
@@ -442,9 +448,10 @@ export function Turns({
 
       {/* agents board */}
       <Turn id="agents-board" turn={turn}>
-        <Band id="agents-board" title="Every agent and sub-agent, on one board.">
-          Claude Code, Codex and OpenCode side by side: each session, its sub-agents, what they are
-          doing and their tokens. No global config to edit. Click an agent to jump to its pane.
+        <Band id="agents-board" title="Every agent session, and the ones you closed.">
+          Claude Code, Codex and OpenCode, grouped like the sidebar. Open one for its branch,
+          tokens, sub-agents and the processes it runs. Past sessions are searchable: find the
+          conversation, resume it in a split.
         </Band>
         <div className="mm-panes">
           <div className="mm-pane">
@@ -464,7 +471,22 @@ export function Turns({
                 <Working text="2 agents running…" />
               </div>
             </div>
+            <div className="mm-panel-inline">
+              <AgentsPanel agents={agentsAt(AGENTS_TURN)} searching inline />
+            </div>
           </div>
+        </div>
+      </Turn>
+
+      {/* pull requests: the dialog sits in the pane, under the narration */}
+      <Turn id="pull-requests" turn={turn}>
+        <Band id="pull-requests" title="Review and merge what your agents open.">
+          Your PRs, the ones waiting for your review, and the focused pane's repo, with approvals,
+          CI and stacked PRs at a glance. Read the threads, request reviewers, comment, approve,
+          update the branch or merge, while checks run live. It uses your own gh.
+        </Band>
+        <div className="mm-panes mm-panes-dialog">
+          <PullRequests />
         </div>
       </Turn>
 
@@ -521,8 +543,8 @@ export function Turns({
       <Turn id="themes" turn={turn} palette={`tokyo-${appearance}`}>
         <Band id="themes" title="Four families, light and dark. One JSON file.">
           This page just switched to Tokyo Night {dark ? "" : "Day "}— flip the light/dark toggle in
-          the top bar and it follows, like the app. Settings live in ~/.config/minmux/settings.json,
-          and a watcher re-applies them as you save.
+          the top bar and it follows, like the app. Running Claude Code and OpenCode sessions
+          repaint in the new theme too. One settings.json, re-applied as you save.
         </Band>
         <div className="mm-themes">
           <div className="mm-theme-grid">
@@ -567,6 +589,41 @@ export function Turns({
             <span className="tok-key">"cursorBlink"</span>: <span className="tok-kw">true</span>
             {"\n}"}
           </pre>
+        </div>
+      </Turn>
+
+      {/* why: the maker's own words (the README's "Why I built this"), signed */}
+      <Turn id="why" turn={turn}>
+        <Band id="why" title="Why I built this.">
+          A terminal I wanted for myself: keep the shell, stay in the loop.
+        </Band>
+        <div className="mm-panes">
+          <div className="mm-pane">
+            <PaneHead name="WHY.md" status="idle" shell={null} />
+            <div className="mm-why">
+              <div className="a-type" aria-hidden="true">
+                <Prompt cwd="~/minmux" cmd="cat WHY.md" />
+              </div>
+              <div className="mm-why-body a-in" style={d(0.6)}>
+                <p>
+                  I love the terminal, and the easiest way to put an agent like Claude Code to work
+                  is to launch it from a CLI. But I also like reading the code an agent writes and
+                  making the edits myself, and a plain terminal makes that hard: you lose track of
+                  which session needs you, and you never really see what changed.
+                </p>
+                <p>
+                  minmux keeps the shell I already like and adds just enough to stay in the loop:
+                  the Changes, Files, and Agents panels show what happened, not just that something
+                  did. It also behaves the same on macOS, Linux and WSL, which helps since my work
+                  moves between all three.
+                </p>
+                <p className="mm-why-sign">
+                  — <a href={MAKER.url}>{MAKER.name}</a>, maker of minmux ·{" "}
+                  <a href={MAKER.url}>{MAKER.url.replace("https://", "")}</a>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </Turn>
 
@@ -648,7 +705,8 @@ export function Turns({
           </div>
           <span className="mm-grow" />
           <p className="mm-credit">
-            © 2026 minmux · MIT · built in the open by <a href="https://dim0.net">dim0 team</a>
+            © 2026 minmux · MIT · made by <a href={MAKER.url}>{MAKER.name}</a>, built in the open
+            with the <a href={TEAM.url}>{TEAM.name}</a>
           </p>
         </div>
       </Turn>

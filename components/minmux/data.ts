@@ -25,8 +25,10 @@ const CHAPTER_IDS = [
   "changes",
   "files",
   "agents-board",
+  "pull-requests",
   "ssh",
   "themes",
+  "why",
   "faq",
   "install",
 ] as const
@@ -47,8 +49,10 @@ const CHAPTER_META: Record<ChapterId, Omit<Chapter, "id">> = {
   changes: { sub: "git diff, per file" },
   files: { sub: "browse · preview" },
   "agents-board": { sub: "claude · codex · opencode", agent: { kind: "opencode", color: "blue" } },
+  "pull-requests": { sub: "review · checks · merge" },
   ssh: { sub: "~/.ssh/config" },
   themes: { sub: "4 families × light/dark" },
+  why: { sub: "cat WHY.md" },
   faq: { sub: "man minmux" },
   install: { sub: "one line · MIT" },
 }
@@ -63,6 +67,7 @@ export const NOTIFY_TURN = turnOf("notifications")
 export const CHANGES_TURN = turnOf("changes")
 export const FILES_TURN = turnOf("files")
 export const AGENTS_TURN = turnOf("agents-board")
+export const PRS_TURN = turnOf("pull-requests")
 export const THEME_TURN = turnOf("themes")
 
 /** Status of chapter `i` while turn `turn` is showing: behind = done, current = running. */
@@ -117,6 +122,18 @@ const DEMO: Record<ChapterId, { api: Status; apiLast: string; web: Status; webLa
     web: "done",
     webLast: "6 login tests pass",
   },
+  "pull-requests": {
+    api: "done",
+    apiLast: "Opened PR #42",
+    web: "done",
+    webLast: "6 login tests pass",
+  },
+  why: {
+    api: "done",
+    apiLast: "Migrated 7 call sites",
+    web: "done",
+    webLast: "6 login tests pass",
+  },
   ssh: {
     api: "done",
     apiLast: "Migrated 7 call sites",
@@ -146,13 +163,42 @@ const demoAt = (turn: number) => DEMO[CHAPTER_IDS[turn]]
 
 export interface AgentCard {
   agent: AgentKind
-  group: string
+  group: string // the sidebar group (tab) it runs in
+  name: string // the session's name (/rename, or the agent's own title)
+  color: SessionColor // its session colour: tints the row
   cwd: string
   status: Status
+  ago: string // last activity
   tokens: string
   last: string
   kids: { kind: string; what: string }[]
+  /** Shown when the row is opened (the agents-board turn opens the first one). */
+  detail?: { branch: string; id: string; processes: { cmd: string; cpu: string; mem: string }[] }
 }
+
+/** Past sessions found by the panel's conversation search (agents-board turn). */
+export const PAST_SESSIONS: {
+  agent: AgentKind
+  name: string
+  cwd: string
+  ago: string
+  hit: [string, string, string] // snippet: before, match, after
+}[] = [
+  {
+    agent: "codex",
+    name: "auth-hardening",
+    cwd: "~/api",
+    ago: "2 d",
+    hit: ["…move the ", "rate limit", " into middleware so…"],
+  },
+  {
+    agent: "claude",
+    name: "login-throttle",
+    cwd: "~/web",
+    ago: "5 d",
+    hit: ["…show the ", "rate limit", " error on the form…"],
+  },
+]
 
 /** The agents panel for a given turn. */
 export function agentsAt(turn: number): AgentCard[] {
@@ -161,10 +207,21 @@ export function agentsAt(turn: number): AgentCard[] {
     {
       agent: "claude",
       group: "api",
+      name: "rate-limits",
+      color: "orange",
       cwd: "~/api",
       status: d.api,
+      ago: d.api === "running" ? "now" : "2m",
       tokens: turn ? "↑42k ↓18k" : "",
       last: d.apiLast,
+      detail:
+        turn === AGENTS_TURN
+          ? {
+              branch: "feat/rate-limits",
+              id: "5e84ac20",
+              processes: [{ cmd: "npm run dev", cpu: "0.4%", mem: "88 MB" }],
+            }
+          : undefined,
       kids:
         turn === AGENTS_TURN
           ? [
@@ -176,8 +233,11 @@ export function agentsAt(turn: number): AgentCard[] {
     {
       agent: "codex",
       group: "web",
+      name: "login-e2e",
+      color: "purple",
       cwd: "~/web",
       status: d.web,
+      ago: d.web === "running" || d.web === "waiting" ? "now" : "4m",
       tokens: turn >= turnOf("split-panes") ? "↑31k ↓9k" : "",
       last: d.webLast,
       kids: [],
@@ -185,8 +245,11 @@ export function agentsAt(turn: number): AgentCard[] {
     {
       agent: "opencode",
       group: "docs",
+      name: "install-docs",
+      color: "blue",
       cwd: "~/docs",
       status: "done",
+      ago: "12m",
       tokens: "↑12k ↓4k",
       last: "Rewrote the install section",
       kids: [],
@@ -252,6 +315,14 @@ export const FAQ: { q: string; a: string }[] = [
     a: "No global config to edit: minmux wires only the panes it launches, so agents started outside minmux do not show up. Claude Code and OpenCode need no setup at all. Codex asks you to approve minmux's hooks once: type /hooks in Codex and press t. Each integration can be switched off in Settings.",
   },
   {
+    q: "Can I get an agent session back after closing minmux?",
+    a: "Yes. Quit minmux with an agent running, reopen it, and that session comes back in the same pane, in the same folder. Past sessions are listed in the Agents panel too: search their conversations, filter by agent or by the current folder, and resume one in a split.",
+  },
+  {
+    q: "Does minmux send telemetry or need an account?",
+    a: "No telemetry and no account. The one request minmux makes on its own is a check for a newer release on GitHub. Everything about pull requests goes through your own gh.",
+  },
+  {
     q: "Where do minmux settings live?",
     a: "In one JSON file that is the source of truth: ~/.config/minmux/settings.json on macOS and Linux, %APPDATA%\\minmux\\settings.json on Windows. Edit it by hand or through the in-app panel; a watcher re-applies changes as you save.",
   },
@@ -262,6 +333,9 @@ export const FAQ: { q: string; a: string }[] = [
 ]
 
 export const SITE_URL = "https://minmux.dev"
+/** Who made minmux (credited in the status bar, the why turn, the footer and the metadata). */
+export const MAKER = { name: "Le Ha Quang", url: "https://quanglee.dev" }
+export const TEAM = { name: "dim0 team", url: "https://dim0.net" }
 export const INSTALL_SH =
   "curl -fsSL https://raw.githubusercontent.com/vcmf/minmux/main/install.sh | sh"
 export const INSTALL_PS = "irm https://raw.githubusercontent.com/vcmf/minmux/main/install.ps1 | iex"

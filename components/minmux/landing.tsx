@@ -7,6 +7,8 @@ import {
   CHAPTERS,
   FILES_TURN,
   GITHUB,
+  MAKER,
+  PRS_TURN,
   NOTIFY_TURN,
   STATUS_LABEL,
   THEME_TURN,
@@ -17,6 +19,7 @@ import {
   countsAt,
   tabsAt,
 } from "./data"
+import { AgentsPanel } from "./agents-panel"
 import { Changes, FilePreview, FilesPanel, Turns } from "./turns"
 import { AgentMark, Ph, type IconName } from "./icons"
 
@@ -25,6 +28,7 @@ const PANEL_BUTTONS: { turn: number; icon: IconName; label: string }[] = [
   { turn: FILES_TURN, icon: "folder-open", label: "Files" },
   { turn: CHANGES_TURN, icon: "git-diff", label: "Changes" },
   { turn: AGENTS_TURN, icon: "tree-structure", label: "Agents" },
+  { turn: PRS_TURN, icon: "github-logo", label: "Pull requests" },
 ]
 
 /** Stage mode (sticky window, scroll = turns). Must match the media query in globals.css. */
@@ -215,7 +219,8 @@ export function Landing() {
                 type="button"
                 className="mm-icon-btn mm-panel-btn mm-only-stage"
                 aria-label={b.label}
-                aria-pressed={rightPanel === b.turn}
+                // the Agents panel stays open across turns; the others belong to their own turn
+                aria-pressed={b.turn === AGENTS_TURN ? rightPanel === AGENTS_TURN : turn === b.turn}
                 onClick={() => goTo(b.turn)}
               >
                 <Ph name={b.icon} size={17} />
@@ -325,64 +330,7 @@ export function Landing() {
               </aside>
             )}
             {rightPanel === AGENTS_TURN && (
-              <aside key="agents" className="mm-right" aria-hidden="true">
-                <div className="mm-side-head">
-                  <span className="mm-label">
-                    AGENTS <span className="c-subtle">3 sessions · {counts.running} working</span>
-                  </span>
-                </div>
-                <div className="mm-agents">
-                  {agents.map((a) => (
-                    <div key={a.group} className="mm-agent">
-                      <span className="mm-agent-group">
-                        <Ph name="tree-structure" size={13} />
-                        <AgentMark kind={a.agent} size={12} />
-                        {a.group}
-                      </span>
-                      <div className="mm-tree-row mm-tree-parent">
-                        <span className="mm-dot" data-s={a.status} />
-                        <div className="mm-tree-labels">
-                          <b>session</b>
-                          <span className="c-subtle mm-small">{a.cwd}</span>
-                        </div>
-                        <div className="mm-tree-right">
-                          <span className="mm-st" data-s={a.status}>
-                            {STATUS_LABEL[a.status]}
-                          </span>
-                          <span className="c-subtle mm-small">{a.tokens}</span>
-                        </div>
-                      </div>
-                      {a.kids.map((k) => (
-                        <div key={k.kind} className="mm-tree-row mm-tree-child through a-in">
-                          <span className="mm-dot" data-s="running" />
-                          <div className="mm-tree-labels">
-                            <b>
-                              agent <span className="c-subtle">·</span> {k.kind}
-                            </b>
-                            <span className="c-subtle mm-small">{k.what}</span>
-                          </div>
-                          <div className="mm-tree-right">
-                            <span className="mm-st" data-s="running">
-                              working
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                      <div className="mm-tree-row mm-tree-child">
-                        <span className="mm-dot mm-dot-msg" />
-                        <div className="mm-tree-labels">
-                          <span className="c-muted mm-ellipsis">{a.last}</span>
-                        </div>
-                        <div className="mm-tree-right">
-                          <span className="c-muted">
-                            {a.status === "running" || a.status === "waiting" ? "…" : "done"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </aside>
+              <AgentsPanel key="agents" agents={agents} searching={turn === AGENTS_TURN} />
             )}
 
             {/* the file preview opens over the whole window, like the app's dialog */}
@@ -404,6 +352,10 @@ export function Landing() {
           <footer className="mm-status">
             <span className="mm-only-stage">macOS · Linux · Windows</span>
             <span className="mm-only-stage">⎇ main</span>
+            <span className="mm-vr mm-only-stage" />
+            <a href={MAKER.url} className="mm-maker">
+              made by {MAKER.name}
+            </a>
             <span className="mm-grow" />
             <span className="mm-only-stage mm-count">
               <span className="mm-dot" data-s="running" />

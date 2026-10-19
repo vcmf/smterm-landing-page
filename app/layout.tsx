@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { SITE_URL } from "@/components/minmux/data"
+import { MAKER, SITE_URL, TEAM } from "@/components/minmux/data"
 import "./globals.css"
 
 const TITLE = "minmux — open-source terminal for running coding agents"
@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   applicationName: "minmux",
-  authors: [{ name: "dim0 team", url: "https://dim0.net" }],
-  creator: "dim0 team",
+  authors: [MAKER, TEAM],
+  creator: MAKER.name,
   category: "developer tools",
   alternates: { canonical: "/" },
   robots: { index: true, follow: true },
