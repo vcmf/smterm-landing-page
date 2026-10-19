@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   AGENTS_TURN,
@@ -233,6 +234,9 @@ export function Landing() {
             <a href={`${GITHUB}/tree/main/docs`} className="mm-link mm-only-stage">
               Docs
             </a>
+            <Link href="/changelog" className="mm-link mm-only-stage">
+              Changelog
+            </Link>
             <a href={GITHUB} className="mm-btn mm-btn-solid mm-btn-sm">
               <Ph name="star" fill size={13} />
               <span>

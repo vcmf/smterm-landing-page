@@ -21,6 +21,12 @@ you can host anywhere: GitHub Pages, Vercel, Netlify, Cloudflare Pages, S3, and 
 
 Other scripts: `npm run lint`, `npm run format` (Prettier), `npm run format:check`.
 
+`/changelog` is built from the app's
+[CHANGELOG.md](https://github.com/vcmf/minmux/blob/main/CHANGELOG.md), fetched from minmux's
+`main` at build time; the build fails if it can't be read. To preview a local copy, set
+`CHANGELOG_PATH=../minmux/CHANGELOG.md`. A minmux release calls this site's Vercel deploy hook
+(the `LANDING_DEPLOY_HOOK` secret in vcmf/minmux), so the page updates with each release.
+
 ## Structure
 
 The page is a scripted minmux window. On desktop it is a sticky 100vh stage: each scroll step
