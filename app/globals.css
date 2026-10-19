@@ -853,11 +853,6 @@ b {
 .mm-changes-inline {
   display: none;
 }
-.mm-turn[data-palette] {
-  background: var(--background);
-  color: var(--foreground);
-}
-
 /* hero */
 .mm-hero {
   flex-grow: 1;
@@ -1133,79 +1128,6 @@ b {
   color: var(--subtle-foreground);
 }
 
-/* themes */
-.mm-themes {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 22px 30px;
-}
-.mm-theme-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-}
-.mm-theme {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px 10px 12px;
-  border: 1px solid var(--border-strong);
-  border-radius: 10px;
-  background: var(--surface);
-}
-.mm-theme b {
-  font-weight: 600;
-}
-.mm-theme.is-sel {
-  border-color: var(--brand);
-}
-.mm-swatch {
-  display: flex;
-  height: 54px;
-  border-radius: 7px;
-  overflow: hidden;
-}
-.mm-swatch > span {
-  flex-grow: 1;
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  padding: 8px;
-}
-/* the variant the page is showing right now */
-.mm-swatch > span[data-on="true"] {
-  box-shadow: inset 0 0 0 2px var(--ring);
-}
-.mm-pair {
-  display: flex;
-  gap: 6px;
-  color: var(--muted-foreground);
-}
-.mm-pair [data-on="true"] {
-  color: var(--foreground);
-  font-weight: 600;
-}
-.mm-swatch i {
-  display: block;
-  width: 16px;
-  height: 5px;
-  border-radius: 3px;
-}
-.mm-swatch i + i {
-  width: 10px;
-}
-.mm-code {
-  padding: 16px 18px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface);
-  font-size: 13px;
-  line-height: 1.65;
-  overflow-x: auto;
-}
-
 /* install */
 .mm-install {
   flex-grow: 1;
@@ -1226,6 +1148,19 @@ b {
 }
 .mm-install-src {
   gap: 4px;
+}
+/* install: the rest of what's in the box, as terminal-style bullet lines */
+.mm-also {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  list-style: none;
+  font-size: 12.5px;
+  color: var(--muted-foreground);
+}
+.mm-also li::before {
+  content: "+ ";
+  color: var(--brand);
 }
 .mm-ctas {
   display: flex;
@@ -1818,7 +1753,7 @@ b {
   .mm-strip {
     display: none;
   }
-  /* palette changes (the themes turn, the light/dark toggle) cross-fade */
+  /* palette changes (the light/dark toggle) cross-fade */
   .mm-window,
   .mm-window * {
     transition:
@@ -1988,12 +1923,6 @@ b {
     display: block;
     border-top: 1px solid var(--border);
     padding-top: 8px;
-  }
-  .mm-themes {
-    padding: 0 16px;
-  }
-  .mm-theme-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .mm-install {
     padding: 0 16px;

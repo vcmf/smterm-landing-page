@@ -24,7 +24,9 @@ Other scripts: `npm run lint`, `npm run format` (Prettier), `npm run format:chec
 ## Structure
 
 The page is a scripted minmux window. On desktop it is a sticky 100vh stage: each scroll step
-(snap) plays the next "turn", and the sessions sidebar is the table of contents. On phones
+(snap) plays the next "turn", and the sessions sidebar is the table of contents. The story is
+the tagline in four verbs (welcome → run → watch → read → ship → faq → install); watch and
+read play a second beat on their own a few seconds in. On phones
 (or short windows) the turns stack as plain sections with a tmux-style strip at the bottom.
 
 ```
@@ -36,7 +38,10 @@ app/
   _fonts.css          bundled @font-face rules for Geist Mono + JetBrains Mono
 components/minmux/
   data.ts             chapters (= sidebar sessions) and per-turn demo state
-  turns.tsx           the nine turns (narration + scripted panes), SVG wordmark, Changes panel
+  turns.tsx           the turns (narration + scripted panes), SVG wordmark, Changes/Files panels
+  agents-panel.tsx    the Agents panel (search, filters, grouped sessions, past sessions)
+  pull-requests.tsx   the pull requests dialog (ship turn)
+  agent-rotator.tsx   the hero's typed agent (claude → codex → opencode)
   landing.tsx         client shell: scroll → turn, ⌘K palette, light/dark toggle, panels
   copy-button.tsx     copy-to-clipboard for install commands
   icons.tsx           Phosphor icons (@phosphor-icons/react, as in the app) + the Claude mark
@@ -46,11 +51,11 @@ public/
 ```
 
 Theming works like the app: `data-palette` on `<html>` is theme family × appearance
-(`minimal-light` by default, `tokyo-*` on the themes turn). Components read semantic tokens
+(`minimal-light` by default, `minimal-dark` from the toggle). Components read semantic tokens
 (`--surface`, `--status-waiting`, `--code-keyword`, …) from `tokens.css`, never palette keys.
 
 To change a turn's copy or script, edit `turns.tsx`; to change what the sidebar, tabs and
-agents panel show at each turn, edit `data.ts`. Chapters are referenced by id (`turnOf("files")`),
+agents panel show at each turn, edit `data.ts`. Chapters are referenced by id (`turnOf("read")`),
 never by number, so adding or reordering one is a single edit to `CHAPTER_IDS`. All headline and paragraph copy is real HTML
 (h1/h2/p) and every turn is in the static export, so it stays indexable. Motion is CSS only
 and switches off under `prefers-reduced-motion`.

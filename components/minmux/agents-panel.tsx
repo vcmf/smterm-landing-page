@@ -72,7 +72,7 @@ export function AgentsPanel({
             </div>
             <div
               className="mm-ag-card"
-              data-open={!!a.detail}
+              data-open={!!a.detail && searching}
               style={{ "--tint": `var(--cc-${a.color})` } as CSSProperties}
             >
               <div className="mm-ag-row">
@@ -88,7 +88,7 @@ export function AgentsPanel({
                   <span className="c-subtle mm-small">{a.ago}</span>
                 </div>
               </div>
-              {a.detail && (
+              {a.detail && searching && (
                 <div className="mm-ag-detail a-in">
                   <div className="mm-ag-meta">
                     <span>{LABEL[a.agent]}</span>

@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react"
 import {
-  AGENTS_TURN,
+  WATCH_TURN,
   INSTALL_PS,
   INSTALL_SH,
   GITHUB,
@@ -9,7 +9,6 @@ import {
   TEAM,
   agentsAt,
   turnOf,
-  type Appearance,
   type ChapterId,
   type Status,
 } from "./data"
@@ -20,25 +19,16 @@ import { PullRequests } from "./pull-requests"
 import { AgentMark, Ph, type AgentKind } from "./icons"
 
 const d = (s: number): CSSProperties => ({ animationDelay: `${s}s` })
+/** When the run turn's second beat (the split) starts, in seconds. */
+const SPLIT_AT = 3
 
 /** One chapter of the page. On desktop only the active one shows; on phones they stack. */
-function Turn({
-  id,
-  turn,
-  palette,
-  children,
-}: {
-  id: ChapterId
-  turn: number
-  palette?: string
-  children: ReactNode
-}) {
+function Turn({ id, turn, children }: { id: ChapterId; turn: number; children: ReactNode }) {
   return (
     <section
       id={id}
       className="mm-turn"
       data-active={turn === turnOf(id)}
-      data-palette={palette}
       aria-labelledby={`${id}-h`}
     >
       {children}
@@ -170,16 +160,7 @@ export function Wordmark() {
   )
 }
 
-export function Turns({
-  turn,
-  onNext,
-  appearance,
-}: {
-  turn: number
-  onNext: () => void
-  appearance: Appearance
-}) {
-  const dark = appearance === "dark"
+export function Turns({ turn, onNext }: { turn: number; onNext: () => void }) {
   return (
     <>
       {/* welcome */}
@@ -244,11 +225,12 @@ export function Turns({
         </div>
       </Turn>
 
-      {/* run the agents */}
-      <Turn id="run-agents" turn={turn}>
-        <Band id="run-agents" title="Launch as many agents as you like.">
-          Claude Code, Codex, OpenCode: each one gets a real shell, in its own tab or pane. Your
-          shell, your prompt, your directory: minmux is a normal terminal first.
+      {/* run: claude types in one pane, then the pane splits and codex starts beside it */}
+      <Turn id="run" turn={turn}>
+        <Band id="run" title="Run Claude Code, Codex and OpenCode, side by side.">
+          Each agent gets a real shell in its own tab or pane: your shell, your prompt, your
+          directory. Split, and the next one starts where you are. minmux is a normal terminal
+          first.
         </Band>
         <div className="mm-panes">
           <div className="mm-pane">
@@ -267,69 +249,28 @@ export function Turns({
               <div className="a-in" style={d(1.7)}>
                 <Tool name="Read" arg="src/auth/routes.ts" />
               </div>
-              <div className="a-in mm-out" style={d(1.8)}>
-                ⎿ 142 lines
-              </div>
-              <div className="a-in" style={d(2.2)}>
+              <div className="a-in" style={d(2.1)}>
                 <Tool name="Write" arg="src/auth/limits.ts" />
               </div>
-              <div className="a-in mm-out" style={d(2.3)}>
-                ⎿ <span className="c-added">+38</span> lines
-              </div>
-              <div className="a-in c-warn" style={d(2.7)}>
-                <Working
-                  text="Wiring the limiter into three routes…"
-                  time="14s · esc to interrupt"
-                />
+              <div className="a-in c-warn" style={d(2.5)}>
+                <Working text="Wiring the limiter into three routes…" time="14s" />
               </div>
             </div>
           </div>
-        </div>
-      </Turn>
-
-      {/* split panes */}
-      <Turn id="split-panes" turn={turn}>
-        <Band id="split-panes" title="Split, and put another one to work.">
-          Resizable splits and tabs, drag a pane anywhere. A split opens in the same directory, so
-          the next agent starts where you are.
-        </Band>
-        <div className="mm-panes">
-          <div className="mm-pane">
-            <PaneHead name="api" agent="claude" status="running" />
-            <div className="mm-term" aria-hidden="true">
-              <div className="c-muted">
-                <span className="c-subtle">&gt;</span> add rate limiting to the auth routes
-              </div>
-              <div>
-                <Tool name="Update" arg="src/auth/routes.ts" />
-              </div>
-              <div className="mm-out">
-                ⎿ <span className="c-added">+6</span> <span className="c-removed">−2</span>
-              </div>
-              <div>
-                <Tool name="Bash" arg="npm test -- auth" />
-              </div>
-              <div className="c-warn">
-                <Working text="Running the auth suite…" time="31s" />
-              </div>
-            </div>
-          </div>
-          <div className="mm-pane a-grow">
+          {/* beat 2: the split grows from the divider */}
+          <div className="mm-pane a-grow" style={d(SPLIT_AT)}>
             <PaneHead name="web" agent="codex" status="running" />
             <div className="mm-term" aria-hidden="true">
-              <div className="a-type" style={d(0.45)}>
+              <div className="a-type" style={d(SPLIT_AT + 0.45)}>
                 <Prompt cwd="~/web" cmd="codex" />
               </div>
-              <div className="a-in" style={d(1.2)}>
+              <div className="a-in" style={d(SPLIT_AT + 1.2)}>
                 <span className="c-subtle">&gt;</span> write e2e tests for the login form
               </div>
-              <div className="a-in" style={d(1.6)}>
+              <div className="a-in" style={d(SPLIT_AT + 1.6)}>
                 <Tool name="Read" arg="app/login/page.tsx" />
               </div>
-              <div className="a-in" style={d(2)}>
-                <Tool name="Write" arg="e2e/login.spec.ts" />
-              </div>
-              <div className="a-in c-warn" style={d(2.4)}>
+              <div className="a-in c-warn" style={d(SPLIT_AT + 2)}>
                 <Working text="Writing tests…" time="6s" />
               </div>
             </div>
@@ -337,11 +278,12 @@ export function Turns({
         </div>
       </Turn>
 
-      {/* notifications */}
-      <Turn id="notifications" turn={turn}>
-        <Band id="notifications" title="The pane that needs you, tells you.">
-          Working, waiting for input, or done. It shows as a dot on the tab and a line in the
-          sidebar, and a background pane that asks a question sends a native notification.
+      {/* watch: codex asks for input (notification); then the Agents panel opens up */}
+      <Turn id="watch" turn={turn}>
+        <Band id="watch" title="It tells you which one needs you.">
+          Working, waiting or done: a dot on the tab, a line in the sidebar, a native notification
+          when a background pane asks. The Agents panel shows every session, its sub-agents and the
+          processes it runs, and finds the sessions you closed so you can resume them.
         </Band>
         <div className="mm-panes">
           <div className="mm-pane mm-pane-dim">
@@ -352,7 +294,7 @@ export function Turns({
               </div>
               <div className="mm-out">⎿ 24 passed</div>
               <div className="c-warn">
-                <Working text="Checking the limiter headers…" />
+                <Working text="Migrating old limiter call sites…" />
               </div>
             </div>
           </div>
@@ -375,6 +317,9 @@ export function Turns({
                 <span className="c-muted"> 3. No, and tell Codex what to do differently</span>
               </div>
             </div>
+            <div className="mm-panel-inline">
+              <AgentsPanel agents={agentsAt(WATCH_TURN)} searching inline />
+            </div>
           </div>
         </div>
         <div className="mm-toast a-toast" style={d(0.6)} aria-hidden="true">
@@ -389,11 +334,12 @@ export function Turns({
         </div>
       </Turn>
 
-      {/* changes (the diff lives in the right panel) */}
-      <Turn id="changes" turn={turn}>
-        <Band id="changes" title="Read what changed, without leaving the terminal.">
-          A git diff for the focused pane's directory: per-file counts and the full unified diff.
-          Branch and ahead/behind sit in the status bar.
+      {/* read: the brand promise. The diff first (right panel), then the files and a preview */}
+      <Turn id="read" turn={turn}>
+        <Band id="read" title="You still read the code.">
+          The Changes panel shows the git diff of the focused pane's folder, per file. The Files
+          panel browses its tree: click a file and read it, with line numbers and syntax colour,
+          without leaving the terminal.
         </Band>
         <div className="mm-panes">
           <div className="mm-pane">
@@ -409,34 +355,10 @@ export function Turns({
                 and /reset.
               </div>
               <div className="mm-out">3 files changed. The auth suite passes (24 tests).</div>
-              <div className="mm-out">Limits are read from AUTH_RATE_LIMIT, default 10/min.</div>
+              <div className="mm-out">The limiter lives in src/auth/limits.ts.</div>
             </div>
             <div className="mm-changes-inline">
               <Changes />
-            </div>
-          </div>
-        </div>
-      </Turn>
-
-      {/* files (the tree is the right panel; the preview opens over the window) */}
-      <Turn id="files" turn={turn}>
-        <Band id="files" title="Browse the tree. Read any file.">
-          A Files panel for the focused pane's directory, with a breadcrumb up the path. Click a
-          file to read it with line numbers and syntax colour, or open it in your editor.
-        </Band>
-        <div className="mm-panes">
-          <div className="mm-pane">
-            <PaneHead
-              name="api"
-              agent="claude"
-              status="done"
-              right={<span className="c-muted mm-small">done</span>}
-            />
-            <div className="mm-term" aria-hidden="true">
-              <div>
-                <span className="c-brand">●</span> The limiter lives in src/auth/limits.ts.
-              </div>
-              <div className="mm-out">Worth a read before we migrate the old call sites.</div>
             </div>
             <div className="mm-files-inline">
               <FilesPanel />
@@ -446,186 +368,15 @@ export function Turns({
         </div>
       </Turn>
 
-      {/* agents board */}
-      <Turn id="agents-board" turn={turn}>
-        <Band id="agents-board" title="Every agent session, and the ones you closed.">
-          Claude Code, Codex and OpenCode, grouped like the sidebar. Open one for its branch,
-          tokens, sub-agents and the processes it runs. Past sessions are searchable: find the
-          conversation, resume it in a split.
-        </Band>
-        <div className="mm-panes">
-          <div className="mm-pane">
-            <PaneHead name="api" agent="claude" status="running" />
-            <div className="mm-term" aria-hidden="true">
-              <div className="c-muted">
-                <span className="c-subtle">&gt;</span> find every place we call the old limiter and
-                migrate it
-              </div>
-              <div className="a-in" style={d(0.4)}>
-                <Tool name="Task" arg="Explore: find rateLimit( call sites" />
-              </div>
-              <div className="a-in" style={d(0.7)}>
-                <Tool name="Task" arg="Bash: run the full test suite" />
-              </div>
-              <div className="a-in c-warn" style={d(1)}>
-                <Working text="2 agents running…" />
-              </div>
-            </div>
-            <div className="mm-panel-inline">
-              <AgentsPanel agents={agentsAt(AGENTS_TURN)} searching inline />
-            </div>
-          </div>
-        </div>
-      </Turn>
-
-      {/* pull requests: the dialog sits in the pane, under the narration */}
-      <Turn id="pull-requests" turn={turn}>
-        <Band id="pull-requests" title="Review and merge what your agents open.">
+      {/* ship: the pull requests dialog sits in the pane, under the narration */}
+      <Turn id="ship" turn={turn}>
+        <Band id="ship" title="Then ship what they open.">
           Your PRs, the ones waiting for your review, and the focused pane's repo, with approvals,
           CI and stacked PRs at a glance. Read the threads, request reviewers, comment, approve,
           update the branch or merge, while checks run live. It uses your own gh.
         </Band>
         <div className="mm-panes mm-panes-dialog">
           <PullRequests />
-        </div>
-      </Turn>
-
-      {/* ssh */}
-      <Turn id="ssh" turn={turn}>
-        <Band id="ssh" title="Your ~/.ssh/config, one keystroke away.">
-          Every host in one picker, recent first. Open one in a tab or a split, and splits stay on
-          the host. It runs your own ssh, so keys, agents and 2FA prompts work as usual.
-        </Band>
-        <div className="mm-panes">
-          <div className="mm-pane mm-pane-overlay">
-            <PaneHead name="zsh" status="idle" shell={null} />
-            <div className="mm-term" aria-hidden="true">
-              <div>
-                <span className="tok-cwd">~</span> ❯ <span className="mm-block a-caret" />
-              </div>
-            </div>
-            <div className="mm-scrim" />
-            <div className="mm-hosts a-pop" style={d(0.2)} aria-hidden="true">
-              <div className="mm-hosts-q">
-                <Ph name="globe" size={16} />
-                <span className="a-type" style={d(0.4)}>
-                  Connect to host… prod
-                </span>
-                <span className="mm-grow" />
-                <span className="mm-kbd">esc</span>
-              </div>
-              <div className="mm-hosts-list">
-                <div className="mm-host is-sel">
-                  <b>prod-api</b>
-                  <span className="c-muted mm-grow">deploy@10.0.4.12</span>
-                  <span className="c-brand mm-small">recent</span>
-                  <span className="c-subtle mm-small">↵ tab · ⌘↵ split</span>
-                </div>
-                <div className="mm-host">
-                  <b>prod-worker</b>
-                  <span className="c-muted mm-grow">deploy@10.0.4.19</span>
-                  <span className="c-brand mm-small">recent</span>
-                </div>
-                <div className="mm-host">
-                  <b>prod-db-replica</b>
-                  <span className="c-muted mm-grow">admin@db-2.internal</span>
-                </div>
-              </div>
-              <div className="mm-hosts-foot">
-                3 of 9 hosts · from ~/.ssh/config, watched for changes
-              </div>
-            </div>
-          </div>
-        </div>
-      </Turn>
-
-      {/* themes: the page switches to Tokyo Night, in the variant matching light/dark */}
-      <Turn id="themes" turn={turn} palette={`tokyo-${appearance}`}>
-        <Band id="themes" title="Four families, light and dark. One JSON file.">
-          This page just switched to Tokyo Night {dark ? "" : "Day "}— flip the light/dark toggle in
-          the top bar and it follows, like the app. Running Claude Code and OpenCode sessions
-          repaint in the new theme too. One settings.json, re-applied as you save.
-        </Band>
-        <div className="mm-themes">
-          <div className="mm-theme-grid">
-            {THEMES.map((t, i) => (
-              <div
-                key={t.name}
-                className={`mm-theme a-in${i === 1 ? " is-sel" : ""}`}
-                style={d(0.1 + i * 0.08)}
-              >
-                <div className="mm-swatch">
-                  {/* swatches preview other themes, so they carry their own literal colours */}
-                  <span style={{ background: t.dark }} data-on={i === 1 && dark}>
-                    <i style={{ background: t.a1 }} />
-                    <i style={{ background: t.a2 }} />
-                  </span>
-                  <span style={{ background: t.light }} data-on={i === 1 && !dark}>
-                    <i style={{ background: t.b1 }} />
-                    <i style={{ background: t.b2 }} />
-                  </span>
-                </div>
-                <b>{t.name}</b>
-                <span className="mm-small mm-pair">
-                  <span data-on={i === 1 && dark}>{t.pair[0]}</span>
-                  <span className="c-subtle">·</span>
-                  <span data-on={i === 1 && !dark}>{t.pair[1]}</span>
-                </span>
-              </div>
-            ))}
-          </div>
-          <pre className="mm-code a-in" style={d(0.5)} aria-hidden="true">
-            <span className="tok-cmt">{"// ~/.config/minmux/settings.json"}</span>
-            {"\n{\n  "}
-            <span className="tok-key">"theme"</span>: <span className="tok-str">"tokyo-night"</span>
-            {",\n  "}
-            <span className="tok-key">"appearance"</span>:{" "}
-            <span className="tok-str">"{appearance}"</span>
-            {",\n  "}
-            <span className="tok-key">"font"</span>: {"{ "}
-            <span className="tok-key">"family"</span>:{" "}
-            <span className="tok-str">"FiraCode Nerd Font Mono"</span>
-            {" },\n  "}
-            <span className="tok-key">"cursorBlink"</span>: <span className="tok-kw">true</span>
-            {"\n}"}
-          </pre>
-        </div>
-      </Turn>
-
-      {/* why: the maker's own words (the README's "Why I built this"), signed */}
-      <Turn id="why" turn={turn}>
-        <Band id="why" title="Why I built this.">
-          A terminal I wanted for myself: keep the shell, stay in the loop.
-        </Band>
-        <div className="mm-panes">
-          <div className="mm-pane">
-            <PaneHead name="WHY.md" status="idle" shell={null} />
-            <div className="mm-why">
-              <div className="a-type" aria-hidden="true">
-                <Prompt cwd="~/minmux" cmd="cat WHY.md" />
-              </div>
-              <div className="mm-why-body a-in" style={d(0.6)}>
-                <p>
-                  I love the terminal, and the easiest way to put an agent like Claude Code to work
-                  is to launch it from a CLI. But I also like reading the code an agent writes and
-                  making the edits myself, and a plain terminal makes that hard: you lose track of
-                  which session needs you, and you never really see what changed.
-                </p>
-                <p>
-                  minmux keeps the shell I already like and adds just enough to stay in the loop:
-                  the Changes, Files, and Agents panels show what happened, not just that something
-                  did. It also behaves the same on macOS, Linux and WSL, which helps since my work
-                  moves between all three.
-                </p>
-                <p className="mm-why-sign">
-                  — made by{" "}
-                  <a href={MAKER.url} target="_blank" rel="noopener noreferrer">
-                    {MAKER.name}
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </Turn>
 
@@ -664,8 +415,12 @@ export function Turns({
       {/* install */}
       <Turn id="install" turn={turn}>
         <Band id="install" title="Install it in one line.">
-          macOS, Linux, Windows and WSL. MIT licensed: clone it, read it, fork it, ship your own
-          version.
+          “…I also like reading the code an agent writes and making the edits myself, and a plain
+          terminal makes that hard… minmux keeps the shell I already like and adds just enough to
+          stay in the loop.” — made by{" "}
+          <a href={MAKER.url} target="_blank" rel="noopener noreferrer" className="mm-inline-link">
+            {MAKER.name}
+          </a>
         </Band>
         <div className="mm-install">
           <div className="a-in mm-install-block">
@@ -694,7 +449,15 @@ export function Turns({
               make build <span className="c-subtle"> # package for your OS</span>
             </code>
           </div>
-          <div className="a-in mm-ctas" style={d(0.45)}>
+          {/* the rest of what's in the box, one line each: honest and quick to scan */}
+          <ul className="a-in mm-also" style={d(0.4)} aria-label="Also in minmux">
+            <li>SSH hosts from your ~/.ssh/config, splits stay on the host</li>
+            <li>4 theme families, light and dark, in one settings.json</li>
+            <li>sessions come back after a restart</li>
+            <li>no telemetry, no account</li>
+            <li>macOS, Linux, Windows and WSL · MIT</li>
+          </ul>
+          <div className="a-in mm-ctas" style={d(0.5)}>
             <a href={GITHUB} className="mm-btn mm-btn-solid">
               Star on GitHub
             </a>
@@ -919,46 +682,3 @@ export function Changes() {
     </>
   )
 }
-
-const THEMES = [
-  {
-    name: "Minimal",
-    pair: ["Dark", "Light"],
-    dark: "#0b0b0d",
-    light: "#fafafa",
-    a1: "#4ec97a",
-    a2: "#e0a94a",
-    b1: "#1f9d55",
-    b2: "#b7791f",
-  },
-  {
-    name: "Tokyo Night",
-    pair: ["Night", "Day"],
-    dark: "#1a1b26",
-    light: "#e1e2e7",
-    a1: "#9ece6a",
-    a2: "#7aa2f7",
-    b1: "#587539",
-    b2: "#2e7de9",
-  },
-  {
-    name: "Catppuccin",
-    pair: ["Mocha", "Latte"],
-    dark: "#1e1e2e",
-    light: "#eff1f5",
-    a1: "#a6e3a1",
-    a2: "#cba6f7",
-    b1: "#40a02b",
-    b2: "#8839ef",
-  },
-  {
-    name: "Gruvbox",
-    pair: ["Dark", "Light"],
-    dark: "#282828",
-    light: "#fbf1c7",
-    a1: "#b8bb26",
-    a2: "#fabd2f",
-    b1: "#79740e",
-    b2: "#b57614",
-  },
-]
