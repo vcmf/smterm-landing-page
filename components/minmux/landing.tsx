@@ -21,13 +21,13 @@ import {
 } from "./data"
 import { AgentsPanel } from "./agents-panel"
 import { Changes, FilePreview, FilesPanel, Turns } from "./turns"
-import { AgentMark, Ph, type IconName } from "./icons"
+import { AgentMark, AgentsIcon, Ph, type IconName } from "./icons"
 
 /** The app's right-panel toggles; each jumps to the turn that shows its panel. */
-const PANEL_BUTTONS: { turn: number; icon: IconName; label: string }[] = [
+const PANEL_BUTTONS: { turn: number; icon: IconName | "agents"; label: string }[] = [
   { turn: FILES_TURN, icon: "folder-open", label: "Files" },
   { turn: CHANGES_TURN, icon: "git-diff", label: "Changes" },
-  { turn: AGENTS_TURN, icon: "tree-structure", label: "Agents" },
+  { turn: AGENTS_TURN, icon: "agents", label: "Agents" },
   { turn: PRS_TURN, icon: "github-logo", label: "Pull requests" },
 ]
 
@@ -223,7 +223,7 @@ export function Landing() {
                 aria-pressed={b.turn === AGENTS_TURN ? rightPanel === AGENTS_TURN : turn === b.turn}
                 onClick={() => goTo(b.turn)}
               >
-                <Ph name={b.icon} size={17} />
+                {b.icon === "agents" ? <AgentsIcon size={17} /> : <Ph name={b.icon} size={17} />}
               </button>
             ))}
             <button
@@ -353,7 +353,7 @@ export function Landing() {
             <span className="mm-only-stage">macOS · Linux · Windows</span>
             <span className="mm-only-stage">⎇ main</span>
             <span className="mm-vr mm-only-stage" />
-            <a href={MAKER.url} className="mm-maker">
+            <a href={MAKER.url} target="_blank" rel="noopener noreferrer" className="mm-maker">
               made by {MAKER.name}
             </a>
             <span className="mm-grow" />

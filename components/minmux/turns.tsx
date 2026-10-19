@@ -618,7 +618,10 @@ export function Turns({
                   moves between all three.
                 </p>
                 <p className="mm-why-sign">
-                  — made by <a href={MAKER.url}>{MAKER.name}</a>
+                  — made by{" "}
+                  <a href={MAKER.url} target="_blank" rel="noopener noreferrer">
+                    {MAKER.name}
+                  </a>
                 </p>
               </div>
             </div>
@@ -704,8 +707,14 @@ export function Turns({
           </div>
           <span className="mm-grow" />
           <p className="mm-credit">
-            © 2026 minmux · MIT · made by <a href={MAKER.url}>{MAKER.name}</a>, built in the open
-            with the <a href={TEAM.url}>{TEAM.name}</a>
+            © 2026 minmux · MIT · made by{" "}
+            <a href={MAKER.url} target="_blank" rel="noopener noreferrer">
+              {MAKER.name}
+            </a>
+            , built in the open with the{" "}
+            <a href={TEAM.url} target="_blank" rel="noopener noreferrer">
+              {TEAM.name}
+            </a>
           </p>
         </div>
       </Turn>
