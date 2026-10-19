@@ -1,16 +1,15 @@
 "use client"
 
 import Link from "next/link"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
-  AGENTS_TURN,
-  CHANGES_TURN,
+  READ_TURN,
   CHAPTERS,
-  FILES_TURN,
   GITHUB,
-  NOTIFY_TURN,
+  MAKER,
+  SHIP_TURN,
   STATUS_LABEL,
-  THEME_TURN,
+  WATCH_TURN,
   TURNS,
   type Appearance,
   agentsAt,
@@ -18,21 +17,33 @@ import {
   countsAt,
   tabsAt,
 } from "./data"
+import { AgentsPanel } from "./agents-panel"
 import { Changes, FilePreview, FilesPanel, Turns } from "./turns"
-import { AgentMark, Ph, type IconName } from "./icons"
+import { AgentMark, AgentsIcon, Ph, type IconName } from "./icons"
 
-/** The app's right-panel toggles; each jumps to the turn that shows its panel. */
-const PANEL_BUTTONS: { turn: number; icon: IconName; label: string }[] = [
-  { turn: FILES_TURN, icon: "folder-open", label: "Files" },
-  { turn: CHANGES_TURN, icon: "git-diff", label: "Changes" },
-  { turn: AGENTS_TURN, icon: "tree-structure", label: "Agents" },
+type Panel = "agents" | "changes" | "files" | "prs"
+
+/** The app's right-panel toggles; each jumps to the turn (and beat) that shows it. */
+const PANEL_BUTTONS: {
+  panel: Panel
+  turn: number
+  beat: number
+  icon: IconName | "agents"
+  label: string
+}[] = [
+  { panel: "files", turn: READ_TURN, beat: 1, icon: "folder-open", label: "Files" },
+  { panel: "changes", turn: READ_TURN, beat: 0, icon: "git-diff", label: "Changes" },
+  { panel: "agents", turn: WATCH_TURN, beat: 1, icon: "agents", label: "Agents" },
+  { panel: "prs", turn: SHIP_TURN, beat: 0, icon: "github-logo", label: "Pull requests" },
 ]
 
 /** Stage mode (sticky window, scroll = turns). Must match the media query in globals.css. */
 const STAGE_MQ = "(min-width: 960px) and (min-height: 600px)"
 /** Wide enough to keep the Agents panel open on every turn; narrower, only on its own turn. */
 const WIDE_MQ = "(min-width: 1200px)"
-/** How long the files turn shows the tree before the preview opens. */
+/** Two-beat turns (watch, read) play their second beat this long after they show. */
+const BEAT_MS = 3600
+/** How long the read turn shows the files tree before the preview opens. */
 const PREVIEW_DELAY_MS = 1100
 
 /** A media query as state (true on the server: the static export renders the desktop stage). */
@@ -56,11 +67,13 @@ export function Landing() {
   const [sidebar, setSidebar] = useState(true)
   const [palette, setPalette] = useState(false)
   const [preview, setPreview] = useState(false)
+  // the second half of a two-beat turn: watch (agents panel opens up), read (files + preview)
+  const [beat, setBeat] = useState(0)
+  const beatTimer = useRef(0)
   const [appearance, setAppearance] = useState<Appearance>("light")
   // false until the saved appearance is read, so the first effect can't overwrite the
   // pre-paint script's palette with the default (a light flash for dark visitors)
   const [appearanceLoaded, setAppearanceLoaded] = useState(false)
-  const stageMode = useMedia(STAGE_MQ)
   const wide = useMedia(WIDE_MQ)
 
   const goTo = useCallback((i: number, instant = false) => {
@@ -103,13 +116,11 @@ export function Landing() {
     }
   }, [goTo])
 
-  // one palette for the page: theme family × appearance, like the app's activeTheme().
-  // The themes turn switches the whole stage to Tokyo Night (Day in light, Night in dark).
+  // one palette for the page: theme family × appearance, like the app's activeTheme()
   useEffect(() => {
     if (!appearanceLoaded) return
-    const family = stageMode && turn === THEME_TURN ? "tokyo" : "minimal"
-    document.documentElement.dataset.palette = `${family}-${appearance}`
-  }, [turn, appearance, appearanceLoaded, stageMode])
+    document.documentElement.dataset.palette = `minimal-${appearance}`
+  }, [appearance, appearanceLoaded])
 
   // light by default; a dark choice is remembered per browser
   useEffect(() => {
@@ -127,16 +138,31 @@ export function Landing() {
     } catch {}
   }
 
-  // the file preview opens (once the tree has shown) each time the files turn is entered;
-  // it only exists while visible, so nothing invisible can swallow clicks. Esc / outside / ✕ close it.
+  // each turn starts on its first beat; watch and read move to their second on their own
   useEffect(() => {
-    if (turn !== FILES_TURN) {
+    setBeat(0)
+    if (turn !== WATCH_TURN && turn !== READ_TURN) return
+    beatTimer.current = window.setTimeout(() => setBeat(1), BEAT_MS)
+    return () => clearTimeout(beatTimer.current)
+  }, [turn])
+
+  // the read turn's file preview opens once the files tree has shown, and only exists while
+  // visible (nothing invisible can swallow clicks). Esc / outside click / ✕ close it.
+  useEffect(() => {
+    if (turn !== READ_TURN || beat !== 1) {
       setPreview(false)
       return
     }
     const t = setTimeout(() => setPreview(true), PREVIEW_DELAY_MS)
     return () => clearTimeout(t)
-  }, [turn])
+  }, [turn, beat])
+
+  /** A panel button: on its own turn it switches the beat; elsewhere it goes to the turn. */
+  const openPanel = (b: (typeof PANEL_BUTTONS)[number]) => {
+    if (turn !== b.turn) return goTo(b.turn)
+    clearTimeout(beatTimer.current)
+    setBeat(b.beat)
+  }
 
   // ⌘K / Ctrl+K opens the section palette; Esc closes the file preview
   useEffect(() => {
@@ -155,11 +181,14 @@ export function Landing() {
 
   const agents = useMemo(() => agentsAt(turn), [turn])
   // Changes / Files on their own turns; otherwise Agents, unless the window is too narrow
-  const rightPanel =
-    turn === CHANGES_TURN || turn === FILES_TURN
-      ? turn
-      : wide || turn === AGENTS_TURN
-        ? AGENTS_TURN
+  // read shows Changes, then Files; otherwise Agents, unless the window is too narrow
+  const rightPanel: Panel | null =
+    turn === READ_TURN
+      ? beat
+        ? "files"
+        : "changes"
+      : wide || turn === WATCH_TURN
+        ? "agents"
         : null
   const tabs = useMemo(() => tabsAt(turn), [turn])
   const counts = countsAt(turn)
@@ -198,7 +227,7 @@ export function Landing() {
             <span className="mm-grow" />
             <span className="mm-bell mm-only-stage" aria-hidden="true">
               <Ph name="bell" fill size={17} />
-              {turn === NOTIFY_TURN && <span className="mm-bell-n a-pop">1</span>}
+              {turn === WATCH_TURN && <span className="mm-bell-n a-pop">1</span>}
             </span>
             <button
               type="button"
@@ -212,14 +241,14 @@ export function Landing() {
             <span className="mm-vr mm-only-stage" />
             {PANEL_BUTTONS.map((b) => (
               <button
-                key={b.turn}
+                key={b.panel}
                 type="button"
                 className="mm-icon-btn mm-panel-btn mm-only-stage"
                 aria-label={b.label}
-                aria-pressed={rightPanel === b.turn}
-                onClick={() => goTo(b.turn)}
+                aria-pressed={b.panel === "prs" ? turn === SHIP_TURN : rightPanel === b.panel}
+                onClick={() => openPanel(b)}
               >
-                <Ph name={b.icon} size={17} />
+                {b.icon === "agents" ? <AgentsIcon size={17} /> : <Ph name={b.icon} size={17} />}
               </button>
             ))}
             <button
@@ -306,11 +335,11 @@ export function Landing() {
 
             {/* ── panes ── */}
             <main className="mm-main">
-              <Turns turn={turn} onNext={() => goTo(turn + 1)} appearance={appearance} />
+              <Turns turn={turn} onNext={() => goTo(turn + 1)} />
             </main>
 
             {/* ── right panel: Changes / Files on their turns, Agents otherwise ── */}
-            {rightPanel === CHANGES_TURN && (
+            {rightPanel === "changes" && (
               <aside key="changes" className="mm-right mm-right-wide a-panel" aria-hidden="true">
                 <div className="mm-side-head">
                   <span className="mm-label">CHANGES</span>
@@ -319,7 +348,7 @@ export function Landing() {
                 <Changes />
               </aside>
             )}
-            {rightPanel === FILES_TURN && (
+            {rightPanel === "files" && (
               <aside key="files" className="mm-right mm-right-files a-panel-files">
                 <div className="mm-side-head">
                   <span className="mm-label">FILES</span>
@@ -328,69 +357,16 @@ export function Landing() {
                 <FilesPanel onOpen={() => setPreview(true)} />
               </aside>
             )}
-            {rightPanel === AGENTS_TURN && (
-              <aside key="agents" className="mm-right" aria-hidden="true">
-                <div className="mm-side-head">
-                  <span className="mm-label">
-                    AGENTS <span className="c-subtle">3 sessions · {counts.running} working</span>
-                  </span>
-                </div>
-                <div className="mm-agents">
-                  {agents.map((a) => (
-                    <div key={a.group} className="mm-agent">
-                      <span className="mm-agent-group">
-                        <Ph name="tree-structure" size={13} />
-                        <AgentMark kind={a.agent} size={12} />
-                        {a.group}
-                      </span>
-                      <div className="mm-tree-row mm-tree-parent">
-                        <span className="mm-dot" data-s={a.status} />
-                        <div className="mm-tree-labels">
-                          <b>session</b>
-                          <span className="c-subtle mm-small">{a.cwd}</span>
-                        </div>
-                        <div className="mm-tree-right">
-                          <span className="mm-st" data-s={a.status}>
-                            {STATUS_LABEL[a.status]}
-                          </span>
-                          <span className="c-subtle mm-small">{a.tokens}</span>
-                        </div>
-                      </div>
-                      {a.kids.map((k) => (
-                        <div key={k.kind} className="mm-tree-row mm-tree-child through a-in">
-                          <span className="mm-dot" data-s="running" />
-                          <div className="mm-tree-labels">
-                            <b>
-                              agent <span className="c-subtle">·</span> {k.kind}
-                            </b>
-                            <span className="c-subtle mm-small">{k.what}</span>
-                          </div>
-                          <div className="mm-tree-right">
-                            <span className="mm-st" data-s="running">
-                              working
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                      <div className="mm-tree-row mm-tree-child">
-                        <span className="mm-dot mm-dot-msg" />
-                        <div className="mm-tree-labels">
-                          <span className="c-muted mm-ellipsis">{a.last}</span>
-                        </div>
-                        <div className="mm-tree-right">
-                          <span className="c-muted">
-                            {a.status === "running" || a.status === "waiting" ? "…" : "done"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </aside>
+            {rightPanel === "agents" && (
+              <AgentsPanel
+                key="agents"
+                agents={agents}
+                searching={turn === WATCH_TURN && beat === 1}
+              />
             )}
 
             {/* the file preview opens over the whole window, like the app's dialog */}
-            {turn === FILES_TURN && preview && (
+            {turn === READ_TURN && preview && (
               <div className="mm-preview-scrim a-blur" onClick={() => setPreview(false)}>
                 <div
                   className="mm-preview-wrap a-pop"
@@ -408,6 +384,10 @@ export function Landing() {
           <footer className="mm-status">
             <span className="mm-only-stage">macOS · Linux · Windows</span>
             <span className="mm-only-stage">⎇ main</span>
+            <span className="mm-vr mm-only-stage" />
+            <a href={MAKER.url} target="_blank" rel="noopener noreferrer" className="mm-maker">
+              made by {MAKER.name}
+            </a>
             <span className="mm-grow" />
             <span className="mm-only-stage mm-count">
               <span className="mm-dot" data-s="running" />

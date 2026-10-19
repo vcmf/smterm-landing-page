@@ -1,4 +1,4 @@
-import { FAQ, GITHUB, SITE_URL } from "./data"
+import { FAQ, GITHUB, MAKER, SITE_URL, TEAM } from "./data"
 
 /** schema.org JSON-LD for search and AI answer engines. Built from the same data the page
  *  renders (FAQ, links), so the markup never claims what the visible page doesn't say. */
@@ -37,10 +37,20 @@ const GRAPH = {
         "Files panel with breadcrumb and file preview",
         "Agents board for Claude Code, Codex and OpenCode: sessions, sub-agents, status and tokens",
         "Agent sessions resume in the same pane when minmux reopens",
+        "Search past agent conversations and resume one in a split",
+        "See the processes each agent session runs",
+        "Pull requests dialog: review, comment, approve, follow live CI and merge, via your own gh",
         "SSH host picker from ~/.ssh/config",
         "Theme families in light and dark, configured in one JSON file",
       ],
-      author: { "@type": "Organization", name: "dim0 team", url: "https://dim0.net" },
+      author: { "@id": `${SITE_URL}/#maker` },
+      contributor: { "@type": "Organization", name: TEAM.name, url: TEAM.url },
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#maker`,
+      name: MAKER.name,
+      url: MAKER.url,
     },
     {
       "@type": "FAQPage",
