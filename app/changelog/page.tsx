@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 // the SSR build: icons.tsx is for client components (the default build reads a React context)
 import { ArrowSquareOut, Star } from "@phosphor-icons/react/dist/ssr"
-import { GITHUB } from "@/components/minmux/data"
+import { GITHUB, TABS } from "@/components/minmux/data"
 import {
   loadChangelog,
   parseChangelog,
@@ -49,6 +49,24 @@ export default async function ChangelogPage() {
           <img src="/media/icon.png" alt="" width={20} height={20} />
           <span>minmux</span>
         </Link>
+        <span className="mm-vr mm-only-stage" />
+        {/* the landing's tabs, with this page's tab active and the others as links */}
+        <div className="mm-tabs mm-only-stage">
+          {TABS.map((t) => {
+            const href = t.href ?? "/"
+            return href === "/changelog" ? (
+              <div key={t.name} className="mm-tab" data-active="true" aria-current="page">
+                <span className="mm-dot" data-s="running" />
+                <span>{t.name}</span>
+              </div>
+            ) : (
+              <Link key={t.name} href={href} className="mm-tab">
+                <span className="mm-dot" data-s="idle" />
+                <span>{t.name}</span>
+              </Link>
+            )
+          })}
+        </div>
         <span className="mm-grow" />
         <a href={`${GITHUB}/releases`} className="mm-link">
           Releases
