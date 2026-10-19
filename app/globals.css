@@ -452,25 +452,6 @@ b {
 .mm-right-wide {
   width: 440px;
 }
-.mm-agents {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 4px 10px;
-  overflow-y: auto;
-}
-.mm-agent {
-  display: flex;
-  flex-direction: column;
-}
-.mm-agent-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 6px 2px;
-  font-size: 11.5px;
-  color: var(--subtle-foreground);
-}
 .mm-tree-row {
   position: relative;
   display: flex;
@@ -872,11 +853,6 @@ b {
 .mm-changes-inline {
   display: none;
 }
-.mm-turn[data-palette] {
-  background: var(--background);
-  color: var(--foreground);
-}
-
 /* hero */
 .mm-hero {
   flex-grow: 1;
@@ -1152,79 +1128,6 @@ b {
   color: var(--subtle-foreground);
 }
 
-/* themes */
-.mm-themes {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 22px 30px;
-}
-.mm-theme-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-}
-.mm-theme {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px 10px 12px;
-  border: 1px solid var(--border-strong);
-  border-radius: 10px;
-  background: var(--surface);
-}
-.mm-theme b {
-  font-weight: 600;
-}
-.mm-theme.is-sel {
-  border-color: var(--brand);
-}
-.mm-swatch {
-  display: flex;
-  height: 54px;
-  border-radius: 7px;
-  overflow: hidden;
-}
-.mm-swatch > span {
-  flex-grow: 1;
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-  padding: 8px;
-}
-/* the variant the page is showing right now */
-.mm-swatch > span[data-on="true"] {
-  box-shadow: inset 0 0 0 2px var(--ring);
-}
-.mm-pair {
-  display: flex;
-  gap: 6px;
-  color: var(--muted-foreground);
-}
-.mm-pair [data-on="true"] {
-  color: var(--foreground);
-  font-weight: 600;
-}
-.mm-swatch i {
-  display: block;
-  width: 16px;
-  height: 5px;
-  border-radius: 3px;
-}
-.mm-swatch i + i {
-  width: 10px;
-}
-.mm-code {
-  padding: 16px 18px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface);
-  font-size: 13px;
-  line-height: 1.65;
-  overflow-x: auto;
-}
-
 /* install */
 .mm-install {
   flex-grow: 1;
@@ -1246,6 +1149,19 @@ b {
 .mm-install-src {
   gap: 4px;
 }
+/* install: the rest of what's in the box, as terminal-style bullet lines */
+.mm-also {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  list-style: none;
+  font-size: 12.5px;
+  color: var(--muted-foreground);
+}
+.mm-also li::before {
+  content: "+ ";
+  color: var(--brand);
+}
 .mm-ctas {
   display: flex;
   flex-wrap: wrap;
@@ -1257,7 +1173,359 @@ b {
   font-size: 11.5px;
   color: var(--muted-foreground);
 }
+
+/* ── Agents panel (as in the app: search, filters, sessions grouped like the sidebar) ── */
+.mm-ag-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.mm-ag-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--background);
+  white-space: nowrap;
+}
+.mm-ag-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 11.5px;
+  color: var(--muted-foreground);
+}
+.mm-ag-filters > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.mm-mark-claude {
+  color: var(--agent-claude);
+}
+.mm-mark-codex {
+  color: var(--agent-codex);
+}
+.mm-mark-opencode {
+  color: var(--agent-opencode);
+}
+.mm-ag-list {
+  flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px 10px 14px;
+}
+.mm-ag-group,
+.mm-ag-past {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mm-ag-group-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+}
+.mm-ag-group-head b {
+  font-weight: 600;
+}
+/* a session row: tinted by its session colour, outlined when opened */
+.mm-ag-card {
+  --tint: var(--subtle-foreground);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--tint) 9%, var(--surface));
+}
+.mm-ag-card[data-open="true"] {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tint) 45%, var(--border-strong));
+}
+.mm-ag-card-past {
+  background: var(--surface-active);
+}
+.mm-ag-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+}
+.mm-ag-labels {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mm-ag-labels b {
+  font-weight: 600;
+  font-size: 13px;
+}
+.mm-ag-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+.mm-ag-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 6px 10px;
+}
+.mm-ag-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 0 4px 6px;
+  font-size: 11.5px;
+  color: var(--muted-foreground);
+}
+.mm-ag-procs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 4px 0 26px;
+}
+.mm-ag-proc {
+  display: flex;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+}
+.mm-ag-hit {
+  padding: 0 10px 9px 33px;
+  font-size: 11.5px;
+}
+.mm-ag-hit mark {
+  background: color-mix(in srgb, var(--status-waiting) 22%, transparent);
+  color: var(--foreground);
+  border-radius: 3px;
+}
+.mm-ag-inline,
+.mm-panel-inline {
+  display: none;
+}
+
+/* chips: PR states, "resume", "author" */
+.mm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 7px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+}
+.mm-chip[data-kind="approved"],
+.mm-chip[data-kind="ci-passed"] {
+  color: var(--git-added);
+  border-color: color-mix(in srgb, var(--git-added) 40%, transparent);
+}
+.mm-chip[data-kind="ci-running"],
+.mm-chip[data-kind="behind"] {
+  color: var(--status-waiting);
+  border-color: color-mix(in srgb, var(--status-waiting) 40%, transparent);
+}
+.mm-chip-btn {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  color: var(--foreground);
+}
+
+/* ── Pull requests dialog (inside its turn's pane area) ── */
+.mm-panes-dialog {
+  padding: 18px 22px;
+  background: color-mix(in srgb, var(--surface-active) 45%, var(--background));
+}
+.mm-prs {
+  flex-grow: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 24px 60px -24px var(--shadow);
+  overflow: hidden;
+  animation: mmPop 0.3s ease-out both;
+}
+.mm-prs-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.mm-prs-head b {
+  font-weight: 600;
+  font-size: 14px;
+}
+.mm-prs-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  color: var(--muted-foreground);
+}
+.mm-prs-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.mm-prs-tabs > span {
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: var(--muted-foreground);
+}
+.mm-prs-tabs > span[data-on="true"] {
+  background: var(--surface-active);
+  color: var(--foreground);
+}
+.mm-prs-body {
+  flex-grow: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+.mm-prs-list {
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+.mm-pr {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.mm-pr.is-sel {
+  background: var(--surface-active);
+  box-shadow: inset 2px 0 0 var(--brand);
+}
+/* a stacked PR hangs off the one it builds on, on the app's curved connector */
+.mm-pr.is-stacked {
+  padding-left: 38px;
+}
+.mm-pr.is-stacked::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: -4px;
+  height: 22px;
+  width: 12px;
+  border-left: 1.5px solid var(--border-strong);
+  border-bottom: 1.5px solid var(--border-strong);
+  border-bottom-left-radius: 8px;
+}
+.mm-pr-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  white-space: nowrap;
+}
+.mm-pr-sub {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-size: 11.5px;
+}
+.mm-prs-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  overflow-y: auto;
+}
+.mm-prs-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mm-prs-h b {
+  font-weight: 600;
+  font-size: 14px;
+}
+.mm-prs-label {
+  margin-top: 6px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+}
+.mm-prs-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.mm-prs-check,
+.mm-prs-commit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  min-width: 0;
+}
+.mm-prs-commit {
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+/* ── why turn ── */
+.mm-why {
+  flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px 22px 22px;
+  font-family: var(--mono);
+  font-size: 13.5px;
+}
+.mm-why-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 76ch;
+  line-height: 1.7;
+}
+.mm-why-sign {
+  color: var(--muted-foreground);
+}
+.mm-why-sign a,
 .mm-credit a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.mm-maker {
+  color: var(--muted-foreground);
+}
+.mm-maker:hover {
+  color: var(--foreground);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -1485,7 +1753,7 @@ b {
   .mm-strip {
     display: none;
   }
-  /* palette changes (the themes turn, the light/dark toggle) cross-fade */
+  /* palette changes (the light/dark toggle) cross-fade */
   .mm-window,
   .mm-window * {
     transition:
@@ -1606,6 +1874,32 @@ b {
   .mm-host .mm-small:last-child {
     display: none;
   }
+  .mm-panel-inline {
+    display: block;
+    border-top: 1px solid var(--border);
+  }
+  .mm-ag-inline {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+  }
+  .mm-ag-inline .mm-ag-list {
+    padding: 10px 12px 12px;
+  }
+  .mm-panes-dialog {
+    padding: 0 16px;
+    background: none;
+  }
+  .mm-prs-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .mm-prs-list {
+    border-right: 0;
+  }
+  .mm-why {
+    padding: 14px;
+    font-size: 12.5px;
+  }
   .mm-files-inline {
     display: flex;
     flex-direction: column;
@@ -1629,12 +1923,6 @@ b {
     display: block;
     border-top: 1px solid var(--border);
     padding-top: 8px;
-  }
-  .mm-themes {
-    padding: 0 16px;
-  }
-  .mm-theme-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .mm-install {
     padding: 0 16px;

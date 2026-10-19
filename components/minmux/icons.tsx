@@ -1,48 +1,64 @@
 import {
+  ArrowClockwise,
   ArrowSquareOut,
   Bell,
   CaretDown,
   CaretRight,
   Check,
+  CheckCircle,
+  CircleNotch,
   Copy,
   File,
   Folder,
   FolderOpen,
+  GitBranch,
   GitDiff,
+  GitMerge,
+  GitPullRequest,
+  GithubLogo,
   Globe,
   MagnifyingGlass,
   Moon,
   PencilSimple,
+  Plus,
   SidebarSimple,
+  Square,
   Star,
   Sun,
   TerminalWindow,
-  TreeStructure,
   X,
   type Icon,
 } from "@phosphor-icons/react"
 
 /** The Phosphor icons the page uses (same package as the app; only these are bundled). */
 const ICONS = {
+  "arrow-clockwise": ArrowClockwise,
   "arrow-square-out": ArrowSquareOut,
   bell: Bell,
   "caret-down": CaretDown,
   "caret-right": CaretRight,
   check: Check,
+  "check-circle": CheckCircle,
+  "circle-notch": CircleNotch,
   copy: Copy,
   file: File,
   folder: Folder,
   "folder-open": FolderOpen,
+  "git-branch": GitBranch,
   "git-diff": GitDiff,
+  "git-merge": GitMerge,
+  "git-pull-request": GitPullRequest,
+  "github-logo": GithubLogo,
   globe: Globe,
   "magnifying-glass": MagnifyingGlass,
   moon: Moon,
   "pencil-simple": PencilSimple,
+  plus: Plus,
   "sidebar-simple": SidebarSimple,
+  square: Square,
   star: Star,
   sun: Sun,
   "terminal-window": TerminalWindow,
-  "tree-structure": TreeStructure,
   x: X,
 } satisfies Record<string, Icon>
 
@@ -108,6 +124,39 @@ export function AgentMark({
       aria-hidden="true"
     >
       <path clipRule="evenodd" d={MARKS[kind]} />
+    </svg>
+  )
+}
+
+// minmux's own mark for agents of every kind (the app's AgentsIcon in agent-marks.tsx): a
+// terminal window with a face, the prompt's > winking, a spark for the other eye, _ the mouth.
+// Drawn on Phosphor's grid (256 box, 16 stroke, round ends) so it sits with the icons beside it.
+const AGENTS_D = [
+  "M64 44h128a40 40 0 0 1 40 40v88a40 40 0 0 1-40 40H64a40 40 0 0 1-40-40V84a40 40 0 0 1 40-40Z",
+  "M67 93l22 19-22 19",
+  "M178 78Q178 112 212 112Q178 112 178 146Q178 112 144 112Q178 112 178 78Z",
+  "M112 168h32",
+]
+
+/** The Agents panel's icon, as in the app's top bar. */
+export function AgentsIcon({ size = 16, className }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 256 256"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={16}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      style={{ flex: "none" }}
+      aria-hidden="true"
+    >
+      {AGENTS_D.map((d) => (
+        <path key={d} d={d} />
+      ))}
     </svg>
   )
 }
