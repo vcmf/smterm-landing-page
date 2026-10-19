@@ -270,6 +270,10 @@ b {
   color: var(--muted-foreground);
   white-space: nowrap;
 }
+a.mm-tab:hover {
+  background: var(--surface-hover);
+  color: var(--foreground);
+}
 .mm-tab[data-active="true"] {
   background: var(--background);
   box-shadow: inset 0 0 0 1px var(--border-strong);
@@ -1940,7 +1944,8 @@ b {
     display: flex;
     align-items: center;
     gap: 2px;
-    padding: 0 8px;
+    /* no right padding: the pinned docs/changelog group carries it, so nothing peeks past it */
+    padding: 0 0 0 8px;
     background: var(--primary);
     color: var(--primary-foreground);
     font-family: var(--mono);
@@ -1955,6 +1960,18 @@ b {
     align-items: center;
     padding: 0 10px;
     border-radius: 6px;
+  }
+  .mm-strip-pages {
+    position: sticky;
+    right: 0;
+    margin-left: auto;
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    padding: 0 8px 0 6px;
+    background: var(--primary);
+    box-shadow: -10px 0 10px -4px var(--primary);
+    border-left: 1px solid color-mix(in srgb, var(--primary-foreground) 25%, transparent);
   }
 }
 
@@ -1980,4 +1997,113 @@ b {
   .mm-window * {
     transition: none !important;
   }
+}
+
+/* ── Changelog page (/changelog) ── */
+.cl {
+  min-height: 100vh;
+  background: var(--background);
+}
+.cl-top {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.cl-main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 16px 96px;
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+.cl-main h1 {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.cl-main a {
+  color: var(--brand);
+}
+.cl-main a:hover {
+  text-decoration: underline;
+}
+.cl-main code {
+  font-size: 0.92em;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--surface-active);
+}
+.cl-intro {
+  margin: 10px 0 40px;
+  color: var(--muted-foreground);
+}
+.cl-release {
+  padding: 28px 0;
+  border-top: 1px solid var(--border);
+  scroll-margin-top: 64px;
+}
+.cl-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.cl-head h2 {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+}
+.cl-head h2 a {
+  color: var(--foreground);
+}
+.cl-head time {
+  color: var(--subtle-foreground);
+  font-size: 12px;
+}
+.cl-head .cl-gh {
+  margin-left: auto;
+  color: var(--subtle-foreground);
+}
+.cl-note {
+  margin-top: 12px;
+  color: var(--muted-foreground);
+}
+.cl-group {
+  margin-top: 18px;
+}
+.cl-group h3 {
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.cl-group h3[data-group="added"] {
+  color: var(--git-added);
+}
+.cl-group h3[data-group="fixed"] {
+  color: var(--status-info);
+}
+.cl-group h3[data-group="faster"] {
+  color: var(--status-waiting);
+}
+.cl-group ul {
+  list-style: none;
+}
+.cl-group li {
+  position: relative;
+  padding-left: 18px;
+  margin: 4px 0;
+  text-wrap: pretty;
+}
+.cl-group li::before {
+  content: "–";
+  position: absolute;
+  left: 2px;
+  color: var(--subtle-foreground);
 }

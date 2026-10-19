@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   READ_TURN,
@@ -14,7 +15,7 @@ import {
   agentsAt,
   chapterStatus,
   countsAt,
-  tabsAt,
+  TABS,
 } from "./data"
 import { AgentsPanel } from "./agents-panel"
 import { Changes, FilePreview, FilesPanel, Turns } from "./turns"
@@ -189,7 +190,6 @@ export function Landing() {
       : wide || turn === WATCH_TURN
         ? "agents"
         : null
-  const tabs = useMemo(() => tabsAt(turn), [turn])
   const counts = countsAt(turn)
   const label = `${String(turn).padStart(2, "0")} / ${String(TURNS - 1).padStart(2, "0")}`
 
@@ -213,15 +213,20 @@ export function Landing() {
               <span>minmux</span>
             </a>
             <span className="mm-vr mm-only-stage" />
-            <div className="mm-tabs mm-only-stage" aria-hidden="true">
-              {tabs.map((t) => (
-                <div key={t.name} className="mm-tab" data-active={t.active}>
-                  <span className="mm-dot" data-s={t.status} />
-                  {t.agent && <AgentMark kind={t.agent} size={12} className="mm-tab-mark" />}
-                  <span>{t.name}</span>
-                  {t.count && <span className="c-subtle mm-small">{t.count}</span>}
-                </div>
-              ))}
+            <div className="mm-tabs mm-only-stage">
+              {TABS.map((t) =>
+                t.href ? (
+                  <Link key={t.name} href={t.href} className="mm-tab">
+                    <span className="mm-dot" data-s={t.status} />
+                    <span>{t.name}</span>
+                  </Link>
+                ) : (
+                  <div key={t.name} className="mm-tab" data-active={t.active} aria-hidden="true">
+                    <span className="mm-dot" data-s={t.status} />
+                    <span>{t.name}</span>
+                  </div>
+                ),
+              )}
             </div>
             <span className="mm-grow" />
             <span className="mm-bell mm-only-stage" aria-hidden="true">
@@ -259,9 +264,6 @@ export function Landing() {
               <Ph name={appearance === "dark" ? "sun" : "moon"} size={17} />
             </button>
             <span className="mm-vr mm-only-stage" />
-            <a href={`${GITHUB}/tree/main/docs`} className="mm-link mm-only-stage">
-              Docs
-            </a>
             <a href={GITHUB} className="mm-btn mm-btn-solid mm-btn-sm">
               <Ph name="star" fill size={13} />
               <span>
@@ -423,6 +425,14 @@ export function Landing() {
             {i}:{c.id}
           </a>
         ))}
+        {/* the top bar's link tabs (hidden on phones), pinned right like tmux's status-right */}
+        <span className="mm-strip-pages">
+          {TABS.filter((t) => t.href).map((t) => (
+            <Link key={t.name} href={t.href!}>
+              {t.name}
+            </Link>
+          ))}
+        </span>
       </nav>
 
       {palette && (

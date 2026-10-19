@@ -188,33 +188,23 @@ export function agentsAt(turn: number): AgentCard[] {
 
 export interface DemoTab {
   name: string
-  count: string
   status: Status
   active: boolean
-  agent?: AgentKind
+  /** A tab that opens another page (the docs, the changelog). */
+  href?: string
 }
 
-/** Top-bar tabs for a given turn. */
-export function tabsAt(turn: number): DemoTab[] {
-  const d = demoAt(turn)
-  return [
-    {
-      name: "minmux",
-      count: "",
-      status: "running",
-      active: turn === 0 || turn > READ_TURN,
-    },
-    {
-      name: "api",
-      count: turn >= WATCH_TURN ? "3" : "",
-      status: d.api,
-      active: turn === RUN_TURN || turn === READ_TURN,
-      agent: "claude",
-    },
-    { name: "web", count: "", status: d.web, active: turn === WATCH_TURN, agent: "codex" },
-    { name: "docs", count: "", status: "done", active: false, agent: "opencode" },
-  ]
-}
+/** Top-bar tabs: this page, then the docs and the changelog as links. */
+export const TABS: DemoTab[] = [
+  { name: "minmux", status: "running", active: true },
+  {
+    name: "docs",
+    status: "idle",
+    active: false,
+    href: "https://github.com/vcmf/minmux/tree/main/docs",
+  },
+  { name: "changelog", status: "idle", active: false, href: "/changelog" },
+]
 
 export function countsAt(turn: number): { running: number; waiting: number } {
   const d = demoAt(turn)
