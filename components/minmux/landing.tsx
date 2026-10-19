@@ -425,6 +425,14 @@ export function Landing() {
             {i}:{c.id}
           </a>
         ))}
+        {/* the top bar's link tabs (hidden on phones), pinned right like tmux's status-right */}
+        <span className="mm-strip-pages">
+          {TABS.filter((t) => t.href).map((t) => (
+            <Link key={t.name} href={t.href!}>
+              {t.name}
+            </Link>
+          ))}
+        </span>
       </nav>
 
       {palette && (

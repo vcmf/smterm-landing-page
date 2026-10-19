@@ -1944,7 +1944,8 @@ a.mm-tab:hover {
     display: flex;
     align-items: center;
     gap: 2px;
-    padding: 0 8px;
+    /* no right padding: the pinned docs/changelog group carries it, so nothing peeks past it */
+    padding: 0 0 0 8px;
     background: var(--primary);
     color: var(--primary-foreground);
     font-family: var(--mono);
@@ -1959,6 +1960,18 @@ a.mm-tab:hover {
     align-items: center;
     padding: 0 10px;
     border-radius: 6px;
+  }
+  .mm-strip-pages {
+    position: sticky;
+    right: 0;
+    margin-left: auto;
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    padding: 0 8px 0 6px;
+    background: var(--primary);
+    box-shadow: -10px 0 10px -4px var(--primary);
+    border-left: 1px solid color-mix(in srgb, var(--primary-foreground) 25%, transparent);
   }
 }
 
