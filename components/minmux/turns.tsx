@@ -618,8 +618,7 @@ export function Turns({
                   moves between all three.
                 </p>
                 <p className="mm-why-sign">
-                  — <a href={MAKER.url}>{MAKER.name}</a>, maker of minmux ·{" "}
-                  <a href={MAKER.url}>{MAKER.url.replace("https://", "")}</a>
+                  — made by <a href={MAKER.url}>{MAKER.name}</a>
                 </p>
               </div>
             </div>

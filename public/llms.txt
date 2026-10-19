@@ -41,4 +41,4 @@
 - [Source code on GitHub](https://github.com/vcmf/minmux)
 - [Documentation](https://github.com/vcmf/minmux/tree/main/docs)
 - [Issues](https://github.com/vcmf/minmux/issues)
-- Made by [Le Ha Quang](https://quanglee.dev), built in the open with the [dim0 team](https://dim0.net)
+- Made by [quanglee.dev](https://quanglee.dev), built in the open with the [dim0 team](https://dim0.net)

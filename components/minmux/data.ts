@@ -334,7 +334,7 @@ export const FAQ: { q: string; a: string }[] = [
 
 export const SITE_URL = "https://minmux.dev"
 /** Who made minmux (credited in the status bar, the why turn, the footer and the metadata). */
-export const MAKER = { name: "Le Ha Quang", url: "https://quanglee.dev" }
+export const MAKER = { name: "quanglee.dev", url: "https://quanglee.dev" }
 export const TEAM = { name: "dim0 team", url: "https://dim0.net" }
 export const INSTALL_SH =
   "curl -fsSL https://raw.githubusercontent.com/vcmf/minmux/main/install.sh | sh"
